@@ -20,32 +20,7 @@ local C_SOUNDS = require("Kaleidoscope.classes.C_SOUNDS")
 --+==================================+
 --|  L O C A L   V A R I A B L E S   |
 --+==================================+
-    TOLISS_CP = {} -- Toliss Callout Pro
-
-    TOLISS_CP.last_fuel_total = 0
-
-    TOLISS_CP.Flaps_valid = {0.00,0.25,0.50,0.75,1.00}
-    TOLISS_CP.FLAPS0 = 0 
-    TOLISS_CP.FLAPS1 = 0.25 
-    TOLISS_CP.FLAPS2 = 0.50 
-    TOLISS_CP.FLAPS3 = 0.75 
-    TOLISS_CP.FLAPSFULL = 1
-    TOLISS_CP.LastFlapSet = 0
-
-    TOLISS_CP.WINDOWX = 150 -- Display position from right edge of window
-    TOLISS_CP.WINDOWY = 250 -- Display position from top edge of window
-
-    TOLISS_CP.TFMA = {}
-    TOLISS_CP.Timer = {}
-
-    -- FLAGS
-    TOLISS_CP.isTodCaptured = false 
-    TOLISS_CP.isMissedApproachWarning = false 
-    TOLISS_CP.isAutopilotPhasePreflight = true 
-
-    TOLISS_CP.Top_of_descent_value = 0
-
-    TOLISS_CP.Object_sound = nil -- object for sound processing
+    local TOLISS_CP = {} -- Toliss Callout Pro
 
 --+====================================================================+
 --|       T H E   F O L L O W I N G   A R E   H I G H   L E V E L      |
@@ -59,11 +34,11 @@ local C_SOUNDS = require("Kaleidoscope.classes.C_SOUNDS")
 --++---------------------------------------------------------------------------------------------------++
 function TOLISS_CP.EvaluateFlapsValue(value)
 
-    if     value == TOLISS_CP.FLAPS0    then TOLISS_CP.Object_sound:insert("FlapsUP",0.5)
-    elseif value == TOLISS_CP.FLAPS1    then TOLISS_CP.Object_sound:insert("Flaps1",0.5) 
-    elseif value == TOLISS_CP.FLAPS2    then TOLISS_CP.Object_sound:insert("Flaps2",0.5) 
-    elseif value == TOLISS_CP.FLAPS3    then TOLISS_CP.Object_sound:insert("Flaps3",0.5) 
-    elseif value == TOLISS_CP.FLAPSFULL then TOLISS_CP.Object_sound:insert("FlapsFULL",0.5) 
+    if     value == TOLISS_CP.Flaps_valid[1] then TOLISS_CP.Object_sound:insert("FlapsUP",0.5)
+    elseif value == TOLISS_CP.Flaps_valid[2] then TOLISS_CP.Object_sound:insert("Flaps1",0.5) 
+    elseif value == TOLISS_CP.Flaps_valid[3] then TOLISS_CP.Object_sound:insert("Flaps2",0.5) 
+    elseif value == TOLISS_CP.Flaps_valid[4] then TOLISS_CP.Object_sound:insert("Flaps3",0.5) 
+    elseif value == TOLISS_CP.Flaps_valid[5] then TOLISS_CP.Object_sound:insert("FlapsFULL",0.5) 
     else return TOLISS_CP.LastFlapSet
     end
 
@@ -128,7 +103,7 @@ function TOLISS_CP_DisplayValuesPanel()
     draw_string_Times_Roman_24(800, 840, "ATHRmode2      = "..REF_ATHRmode2 or "")
     draw_string_Times_Roman_24(800, 810, "APVerticalMode = "..REF_APVerticalMode or "")
     draw_string_Times_Roman_24(800, 780, "APLateralMode  = "..REF_APLateralMode or "")
-    draw_string_Times_Roman_24(800, 750, "TOLISS_CP.TFMA.vertical  = "..TOLISS_CP.TFMA.vertical_velocity or "")
+    draw_string_Times_Roman_24(800, 750, "TOLISS_CP.Value.vertical  = "..TOLISS_CP.Value.vertical_velocity or "")
     draw_string_Times_Roman_24(800, 720, "REF_vertical   = "..REF_vertical_velocity or "")
     draw_string_Times_Roman_24(800, 690, "LUA_RUN        = "..LUA_RUN)
     
@@ -161,47 +136,60 @@ end -- end function display_values_panel()
 
 function TOLISS_CP.SetDefaultValues()
 
-    TOLISS_CP.last_fuel_total = REF_m_fuel_total -- Important line. Do not delete it
+    TOLISS_CP.WINDOWX = 150 -- Display position from right edge of window
+    TOLISS_CP.WINDOWY = 250 -- Display position from top edge of window
 
-    TOLISS_CP.Top_of_descent_value = 0
+    -----------
+    -- flags --
+    -----------
+    TOLISS_CP.isTodCaptured = false 
+    TOLISS_CP.isMissedApproachWarning = false 
+    TOLISS_CP.isAutopilotPhasePreflight = true 
+
+    ----------------------------------
+    -- variable that affects events --
+    ----------------------------------
+    TOLISS_CP.Flaps_valid = {0.00,0.25,0.50,0.75,1.00}
     TOLISS_CP.LastFlapSet = REF_FlapLeverRatio
+    TOLISS_CP.last_fuel_total = REF_m_fuel_total -- Important line. Do not delete it
+    TOLISS_CP.Top_of_descent_value = 0
 
-    -- TIMER FMA COLUMN
+    -----------------------------------
+    -- timer for a specific variable --
+    -----------------------------------
+    TOLISS_CP.Timer = {}
     TOLISS_CP.Timer.THRLeverMode = 0 
     TOLISS_CP.Timer.ATHRmode2 = 0 
     TOLISS_CP.Timer.APVerticalMode = 0
     TOLISS_CP.Timer.APVerticalArmed = 0
     TOLISS_CP.Timer.APLateralMode = 0
-    TOLISS_CP.Timer.ApproachCapabilities = 0
     TOLISS_CP.Timer.AP1Engage = 0
     TOLISS_CP.Timer.ATHRmode = 0
-
-    -- Special event around new target altitude
     TOLISS_CP.Timer.AltitudeTargetChanged = 0
     TOLISS_CP.Timer.vertical_velocity = 0
     TOLISS_CP.Timer.gear = 0
    
-    ----------------------
-    -- Table FMA column --
-    ----------------------
-    TOLISS_CP.TFMA.THRLeverMode = REF_THRLeverMode or 0 -- column 1
-    TOLISS_CP.TFMA.ATHRmode2 = REF_ATHRmode2 or 0 -- column 1
-    TOLISS_CP.TFMA.APVerticalMode = REF_APVerticalMode or 0-- column 2
-    TOLISS_CP.TFMA.APVerticalArmed = REF_APVerticalArmed or 0-- column 2 line 2
-    TOLISS_CP.TFMA.APLateralMode = REF_APLateralMode or 0 -- column 3
-    TOLISS_CP.TFMA.ApproachCapabilities = "CAT1 CAT2 CAT3 SINGLE CAT3 DUAL DH XXX MDA XXXX" -- column 4
-    TOLISS_CP.TFMA.AP1Engage = REF_AP1Engage or 0 -- column 5
-    TOLISS_CP.TFMA.ATHRmode = REF_ATHRmode or 0 -- column 5
+    ---------------------------------------
+    -- variable value related to a timer --
+    ---------------------------------------
+    TOLISS_CP.Value = {}
+    TOLISS_CP.Value.THRLeverMode = REF_THRLeverMode or 0 -- column 1
+    TOLISS_CP.Value.ATHRmode2 = REF_ATHRmode2 or 0 -- column 1
+    TOLISS_CP.Value.APVerticalMode = REF_APVerticalMode or 0-- column 2
+    TOLISS_CP.Value.APVerticalArmed = REF_APVerticalArmed or 0-- column 2 line 2
+    TOLISS_CP.Value.APLateralMode = REF_APLateralMode or 0 -- column 3
+    TOLISS_CP.Value.AP1Engage = REF_AP1Engage or 0 -- column 5
+    TOLISS_CP.Value.ATHRmode = REF_ATHRmode or 0 -- column 5
+    TOLISS_CP.Value.AltitudeTargetChanged = REF_ap_alt_target_value or 0
+    TOLISS_CP.Value.vertical_velocity = REF_vertical_velocity or 0
+    TOLISS_CP.Value.gear = REF_GearLever or 0
 
-    -- Special event around new target altitude
-    TOLISS_CP.TFMA.AltitudeTargetChanged = REF_ap_alt_target_value or 0
-    TOLISS_CP.TFMA.vertical_velocity = REF_vertical_velocity or 0
-    TOLISS_CP.TFMA.gear = REF_GearLever or 0
-
+    -------------------------------------------------------------------------------
+    -- temporary message to make sure that the default is done in the right time --
+    -------------------------------------------------------------------------------
     if not TOLISS_CP.Object_sound:is_played("DefaultDone") then 
         TOLISS_CP.Object_sound:insert("DefaultDone",2)
     end
-    --XPLMSpeakString("Reset Toliss Callout Pro")
 
     M_UTILITIES.OutputLog("Set Default Values done")
 
@@ -220,9 +208,9 @@ ATHRmode2[5] = "Mach"
 
 --toliss_airbus/pfdoutputs/general/alpha_floor_mode 1 = alpha floor 2 = toga lock
 ]]
-    if TOLISS_CP.TFMA.THRLeverMode ~= REF_THRLeverMode then
+    if TOLISS_CP.Value.THRLeverMode ~= REF_THRLeverMode then
         TOLISS_CP.Timer.THRLeverMode = M_UTILITIES.SetTimer(2)
-        TOLISS_CP.TFMA.THRLeverMode = REF_THRLeverMode
+        TOLISS_CP.Value.THRLeverMode = REF_THRLeverMode
         if     REF_THRLeverMode == 1 then TOLISS_CP.Object_sound:set_isPlayed_flags("ManThrust",false) 
         elseif REF_THRLeverMode == 2 then TOLISS_CP.Object_sound:set_isPlayed_flags("ManFlex",false) 
         elseif REF_THRLeverMode == 3 then TOLISS_CP.Object_sound:set_isPlayed_flags("ManTOGA",false) 
@@ -239,9 +227,9 @@ ATHRmode2[5] = "Mach"
         end 
     end
 
-    if TOLISS_CP.TFMA.ATHRmode2 ~= REF_ATHRmode2 then
+    if TOLISS_CP.Value.ATHRmode2 ~= REF_ATHRmode2 then
         TOLISS_CP.Timer.ATHRmode2 = M_UTILITIES.SetTimer(2)
-        TOLISS_CP.TFMA.ATHRmode2 = REF_ATHRmode2
+        TOLISS_CP.Value.ATHRmode2 = REF_ATHRmode2
         if     REF_ATHRmode2 == 1 then TOLISS_CP.Object_sound:set_isPlayed_flags("ThrustClimb",false) 
         elseif REF_ATHRmode2 == 2 then TOLISS_CP.Object_sound:set_isPlayed_flags("ThrustIdle",false) 
         elseif REF_ATHRmode2 == 4 then TOLISS_CP.Object_sound:set_isPlayed_flags("Speed",false) 
@@ -281,9 +269,9 @@ APVerticalMode[112] = "EXP CLB"
 APVerticalMode[113] = "EXP DES"
     ]]
 
-    if TOLISS_CP.TFMA.APVerticalMode ~= REF_APVerticalMode then
+    if TOLISS_CP.Value.APVerticalMode ~= REF_APVerticalMode then
         TOLISS_CP.Timer.APVerticalMode = M_UTILITIES.SetTimer(2)
-        TOLISS_CP.TFMA.APVerticalMode = REF_APVerticalMode
+        TOLISS_CP.Value.APVerticalMode = REF_APVerticalMode
         if     REF_APVerticalMode == 0 then TOLISS_CP.Object_sound:set_isPlayed_flags("SRS",false) 
         elseif REF_APVerticalMode == 1 then TOLISS_CP.Object_sound:set_isPlayed_flags("Climb",false) 
         elseif REF_APVerticalMode == 2 then TOLISS_CP.Object_sound:set_isPlayed_flags("Des",false) 
@@ -334,13 +322,13 @@ APVerticalMode[113] = "EXP DES"
             end
         elseif REF_APVerticalMode == 107 and not TOLISS_CP.Object_sound:is_played("VS") then 
             TOLISS_CP.Timer.vertical_velocity = M_UTILITIES.SetTimer(5)
-            TOLISS_CP.TFMA.vertical_velocity = REF_vertical_velocity
+            TOLISS_CP.Value.vertical_velocity = REF_vertical_velocity
         end
     end
 
-    if REF_APVerticalMode == 107 and TOLISS_CP.TFMA.vertical_velocity ~= REF_vertical_velocity then
+    if REF_APVerticalMode == 107 and TOLISS_CP.Value.vertical_velocity ~= REF_vertical_velocity then
         TOLISS_CP.Timer.vertical_velocity = M_UTILITIES.SetTimer(5)
-        TOLISS_CP.TFMA.vertical_velocity = REF_vertical_velocity
+        TOLISS_CP.Value.vertical_velocity = REF_vertical_velocity
     end
 
     if TOLISS_CP.Timer.vertical_velocity ~= 0 and REF_total_running_time_sec > TOLISS_CP.Timer.vertical_velocity then
@@ -386,9 +374,9 @@ APLateralMode[11] = "LAND"
 APLateralMode[12] = "GA TRK"
 APLateralMode[101] = "HDG or TRK"
 ]]
-    if TOLISS_CP.TFMA.APLateralMode ~= REF_APLateralMode then
+    if TOLISS_CP.Value.APLateralMode ~= REF_APLateralMode then
         TOLISS_CP.Timer.APLateralMode = M_UTILITIES.SetTimer(2)
-        TOLISS_CP.TFMA.APLateralMode = REF_APLateralMode
+        TOLISS_CP.Value.APLateralMode = REF_APLateralMode
         if     REF_APLateralMode == 0 then TOLISS_CP.Object_sound:set_isPlayed_flags("RWY",false) 
         elseif REF_APLateralMode == 1 then TOLISS_CP.Object_sound:set_isPlayed_flags("RWYTRK",false) 
         elseif REF_APLateralMode == 2 then TOLISS_CP.Object_sound:set_isPlayed_flags("NAV",false) 
@@ -428,9 +416,9 @@ ATHRmode[1] = "Auto Thrust Blue"
 ATHRmode[2] = "Auto Thrust"
 
 ]]
-    if TOLISS_CP.TFMA.AP1Engage ~= REF_AP1Engage then
+    if TOLISS_CP.Value.AP1Engage ~= REF_AP1Engage then
         TOLISS_CP.Timer.AP1Engage = M_UTILITIES.SetTimer(2)
-        TOLISS_CP.TFMA.AP1Engage = REF_AP1Engage
+        TOLISS_CP.Value.AP1Engage = REF_AP1Engage
         if REF_AP1Engage == 1 then 
             TOLISS_CP.Object_sound:set_isPlayed_flags("AP1On",false) 
         end 
@@ -443,9 +431,9 @@ ATHRmode[2] = "Auto Thrust"
         end 
     end
 
-    if TOLISS_CP.TFMA.AP2Engage ~= REF_AP2Engage then
+    if TOLISS_CP.Value.AP2Engage ~= REF_AP2Engage then
         TOLISS_CP.Timer.AP2Engage = M_UTILITIES.SetTimer(2)
-        TOLISS_CP.TFMA.AP2Engage = REF_AP2Engage
+        TOLISS_CP.Value.AP2Engage = REF_AP2Engage
         if REF_AP2Engage == 1 then 
             TOLISS_CP.Object_sound:set_isPlayed_flags("AP2On",false) 
         end 
@@ -458,9 +446,9 @@ ATHRmode[2] = "Auto Thrust"
         end 
     end
 
-    if TOLISS_CP.TFMA.ATHRmode ~= REF_ATHRmode then
+    if TOLISS_CP.Value.ATHRmode ~= REF_ATHRmode then
         TOLISS_CP.Timer.ATHRmode = M_UTILITIES.SetTimer(2)
-        TOLISS_CP.TFMA.ATHRmode = REF_ATHRmode
+        TOLISS_CP.Value.ATHRmode = REF_ATHRmode
         if     REF_ATHRmode == 1 then TOLISS_CP.Object_sound:set_isPlayed_flags("ATHRBlue",false) 
         elseif REF_ATHRmode == 2 then TOLISS_CP.Object_sound:set_isPlayed_flags("ATHR",false) 
         end 
@@ -489,15 +477,15 @@ APVerticalArmed[8] = "ALT CSTR magenta armed"
 APVerticalArmed[10] = "OP CLB armed"
     ]]
 
-    if     TOLISS_CP.TFMA.APVerticalArmed ~= REF_APVerticalArmed then
+    if     TOLISS_CP.Value.APVerticalArmed ~= REF_APVerticalArmed then
         TOLISS_CP.Timer.APVerticalArmed = M_UTILITIES.SetTimer(10)
-        TOLISS_CP.TFMA.APVerticalArmed = REF_APVerticalArmed
+        TOLISS_CP.Value.APVerticalArmed = REF_APVerticalArmed
         if     REF_APVerticalArmed == 6 then TOLISS_CP.Object_sound:set_isPlayed_flags("Alt",false) 
         elseif REF_APVerticalArmed == 8 then TOLISS_CP.Object_sound:set_isPlayed_flags("Alt",false) 
         end 
-    elseif TOLISS_CP.TFMA.AltitudeTargetChanged ~= REF_ap_alt_target_value then
+    elseif TOLISS_CP.Value.AltitudeTargetChanged ~= REF_ap_alt_target_value then
         TOLISS_CP.Timer.AltitudeTargetChanged = M_UTILITIES.SetTimer(10)
-        TOLISS_CP.TFMA.AltitudeTargetChanged = REF_ap_alt_target_value
+        TOLISS_CP.Value.AltitudeTargetChanged = REF_ap_alt_target_value
         if     REF_APVerticalArmed == 6 then TOLISS_CP.Object_sound:set_isPlayed_flags("Alt",false) 
         elseif REF_APVerticalArmed == 8 then TOLISS_CP.Object_sound:set_isPlayed_flags("Alt",false) 
         end 
@@ -542,9 +530,9 @@ function TOLISS_CP.CheckFlapsAndGear()
         TOLISS_CP.LastFlapSet = TOLISS_CP.EvaluateFlapsValue(REF_FlapLeverRatio)
     end
 
-    if TOLISS_CP.TFMA.gear ~= REF_GearLever then
+    if TOLISS_CP.Value.gear ~= REF_GearLever then
         TOLISS_CP.Timer.gear = M_UTILITIES.SetTimer(1)
-        TOLISS_CP.TFMA.gear = REF_GearLever
+        TOLISS_CP.Value.gear = REF_GearLever
     end
 
     -- POSITIVE CLIMB EVENT  
@@ -675,9 +663,9 @@ function TOLISS_CP.CheckAutopilotPhase_Climb()
   --THR CLB | OP CLB | NAV | (HDG AUTO...DOT)
 
     --[[
-    if TOLISS_CP.TFMA.ATHRmode2 ~= REF_ATHRmode2 and REF_ATHRmode2 == 1 then
+    if TOLISS_CP.Value.ATHRmode2 ~= REF_ATHRmode2 and REF_ATHRmode2 == 1 then
         TOLISS_CP.Timer.ATHRmode2 = M_UTILITIES.SetTimer(2)
-        TOLISS_CP.TFMA.ATHRmode2 = REF_ATHRmode2
+        TOLISS_CP.Value.ATHRmode2 = REF_ATHRmode2
         TOLISS_CP.Object_sound:set_isPlayed_flags("ThrustClimb",false) 
         TOLISS_CP.Object_sound:set_isPlayed_flags("Climb",false)
     end
