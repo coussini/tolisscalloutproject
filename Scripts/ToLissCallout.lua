@@ -29,23 +29,6 @@ local C_SOUNDS = require("Kaleidoscope.classes.C_SOUNDS")
 --| CONVENTION: These functions use Uper Camel Case without underscore |
 --+====================================================================+
 
---++---------------------------------------------------------------------------------------------------++
---|| TOLISS_CP.EvaluateFlapsValue() check what is the state of the flaps, then play a sound about that || 
---++---------------------------------------------------------------------------------------------------++
-function TOLISS_CP.EvaluateFlapsValue(value)
-
-    if     value == TOLISS_CP.Flaps_valid[1] then TOLISS_CP.Object_sound:insert("FlapsUP",0.5)
-    elseif value == TOLISS_CP.Flaps_valid[2] then TOLISS_CP.Object_sound:insert("Flaps1",0.5) 
-    elseif value == TOLISS_CP.Flaps_valid[3] then TOLISS_CP.Object_sound:insert("Flaps2",0.5) 
-    elseif value == TOLISS_CP.Flaps_valid[4] then TOLISS_CP.Object_sound:insert("Flaps3",0.5) 
-    elseif value == TOLISS_CP.Flaps_valid[5] then TOLISS_CP.Object_sound:insert("FlapsFULL",0.5) 
-    else return TOLISS_CP.LastFlapSet
-    end
-
-    return value
-
-end
-
 --++---------------------------------------------------------++
 --|| TOLISS_CP.CatchTODTime() return the Top Of Descent time || 
 --++---------------------------------------------------------++
@@ -56,144 +39,6 @@ function TOLISS_CP.CatchTODTime(s)
   return M_UTILITIES.LastWord(stringTrim)
 
 end
-
---++---------------------------------------------------------++
---|| TOLISS_CP.DisplayValuesPanel() Display some informations for the Toliss Callout Pro into a widget || 
---++---------------------------------------------------------++
-function TOLISS_CP_DisplayValuesPanel()
-    
-    local sGS = M_UTILITIES.Round(REF_GSCapt)
-    local sIAS = M_UTILITIES.Round(REF_IASCapt)
-    local sALT = M_UTILITIES.Round(REF_altitude_ft_pilot)
-    local sVSI = M_UTILITIES.Round(REF_vvi_fpm_pilot)
-    local sV1 = REF_V1
-    local sVR = REF_VR
-    local sREV = M_UTILITIES.Round(REF_thrust_reverser_deploy_ratio)
-    local sDistToDest = M_UTILITIES.Round(REF_DistToDest,2)
-    local sAPPhase = REF_APPhase
-    local sTOD = ""
-
-    if TOLISS_CP.isTodCaptured and TOLISS_CP.Top_of_descent_value ~= 0 then
-        sTOD = M_UTILITIES.Round(TOLISS_CP.Top_of_descent_value,2).." NM"
-    end
-
-    XPLMSetGraphicsState(0,0,0,1,1,0,0)
-    
-    -- DRAW THE TITLE BOX (BOX COLOR CHANGE DEPENDING A WARNING)
-    if REF_APPhase == 3 and TOLISS_CP.Top_of_descent_value == 0 then
-        graphics.set_color(1, 0, 0, 0.8)
-    else
-        graphics.set_color(0.12,0.54,0.56, 1)
-    end
-
-    graphics.draw_rectangle(SCREEN_WIDTH - TOLISS_CP.WINDOWX + 0, SCREEN_HIGHT - TOLISS_CP.WINDOWY + 200, SCREEN_WIDTH - TOLISS_CP.WINDOWX + 180, SCREEN_HIGHT - TOLISS_CP.WINDOWY + 220)
-
-    -- DRAW THE TITLE 
-    graphics.set_color(1, 1, 1, 0.8)
-    draw_string_Helvetica_18(SCREEN_WIDTH - TOLISS_CP.WINDOWX + 5, SCREEN_HIGHT - TOLISS_CP.WINDOWY + 202, "Toliss Callouts")       
-    
-    -- DRAW THE TRANSPARENT BACKGROUND
-    graphics.set_color(0, 0, 0, 0.5) 
-    graphics.draw_rectangle(SCREEN_WIDTH - TOLISS_CP.WINDOWX + 0, SCREEN_HIGHT - TOLISS_CP.WINDOWY + 10, SCREEN_WIDTH - TOLISS_CP.WINDOWX + 180, SCREEN_HIGHT - TOLISS_CP.WINDOWY + 200)
-        
-    glColor4f(M_COLORS.YELLOW.red, M_COLORS.YELLOW.green, M_COLORS.YELLOW.blue, 1)
-    
-    draw_string_Times_Roman_24(800, 900, "PHASE          = "..REF_APPhase or "")
-    draw_string_Times_Roman_24(800, 870, "THRLeverMode   = "..REF_THRLeverMode or "")
-    draw_string_Times_Roman_24(800, 840, "ATHRmode2      = "..REF_ATHRmode2 or "")
-    draw_string_Times_Roman_24(800, 810, "APVerticalMode = "..REF_APVerticalMode or "")
-    draw_string_Times_Roman_24(800, 780, "APLateralMode  = "..REF_APLateralMode or "")
-    draw_string_Times_Roman_24(800, 750, "TOLISS_CP.Value.vertical  = "..TOLISS_CP.Value.vertical_velocity or "")
-    draw_string_Times_Roman_24(800, 720, "REF_vertical   = "..REF_vertical_velocity or "")
-    draw_string_Times_Roman_24(800, 690, "LUA_RUN        = "..LUA_RUN)
-    
-    -- DRAW THE PARAMETERS VALUES
-    graphics.set_color(1, 1, 1, 0.8)
-
-    if REF_APPhase == 3 and TOLISS_CP.Top_of_descent_value == 0 then
-        draw_string_Helvetica_12(SCREEN_WIDTH - TOLISS_CP.WINDOWX + 10, SCREEN_HIGHT - TOLISS_CP.WINDOWY + 180, "WARNING")
-        draw_string_Helvetica_12(SCREEN_WIDTH - TOLISS_CP.WINDOWX + 10, SCREEN_HIGHT - TOLISS_CP.WINDOWY + 160, "PLEASE PRESS")
-        draw_string_Helvetica_12(SCREEN_WIDTH - TOLISS_CP.WINDOWX + 10, SCREEN_HIGHT - TOLISS_CP.WINDOWY + 140 , "PERF IN THE")
-        draw_string_Helvetica_12(SCREEN_WIDTH - TOLISS_CP.WINDOWX + 10, SCREEN_HIGHT - TOLISS_CP.WINDOWY + 120, "LEFT FMS")
-        draw_string_Helvetica_12(SCREEN_WIDTH - TOLISS_CP.WINDOWX + 10, SCREEN_HIGHT - TOLISS_CP.WINDOWY + 100, "TO CATCH")
-        draw_string_Helvetica_12(SCREEN_WIDTH - TOLISS_CP.WINDOWX + 10, SCREEN_HIGHT - TOLISS_CP.WINDOWY + 80, " THE TOD VALUE")
-        draw_string_Helvetica_12(SCREEN_WIDTH - TOLISS_CP.WINDOWX + 10, SCREEN_HIGHT - TOLISS_CP.WINDOWY + 60, "Dist brut: "..sDistToDest.." NM")
-        draw_string_Helvetica_12(SCREEN_WIDTH - TOLISS_CP.WINDOWX + 10, SCREEN_HIGHT - TOLISS_CP.WINDOWY + 40, "tot_run_sec: "..M_UTILITIES.Round(REF_total_running_time_sec,2))
-        draw_string_Helvetica_12(SCREEN_WIDTH - TOLISS_CP.WINDOWX + 10, SCREEN_HIGHT - TOLISS_CP.WINDOWY + 20, "PHASE: "..sAPPhase)
-    else
-        draw_string_Helvetica_12(SCREEN_WIDTH - TOLISS_CP.WINDOWX + 10, SCREEN_HIGHT - TOLISS_CP.WINDOWY + 180, "GS: "..sGS.." m/sec")
-        draw_string_Helvetica_12(SCREEN_WIDTH - TOLISS_CP.WINDOWX + 10, SCREEN_HIGHT - TOLISS_CP.WINDOWY + 160, "IAS: "..sIAS.." Kts")
-        draw_string_Helvetica_12(SCREEN_WIDTH - TOLISS_CP.WINDOWX + 10, SCREEN_HIGHT - TOLISS_CP.WINDOWY + 140 , "ALT: "..sALT.." VSI: "..sVSI)
-        draw_string_Helvetica_12(SCREEN_WIDTH - TOLISS_CP.WINDOWX + 10, SCREEN_HIGHT - TOLISS_CP.WINDOWY + 120, "BUG_V1: "..sV1)
-        draw_string_Helvetica_12(SCREEN_WIDTH - TOLISS_CP.WINDOWX + 10, SCREEN_HIGHT - TOLISS_CP.WINDOWY + 100, "BUG_VR: "..sVR)
-        draw_string_Helvetica_12(SCREEN_WIDTH - TOLISS_CP.WINDOWX + 10, SCREEN_HIGHT - TOLISS_CP.WINDOWY + 80, "REV: "..sREV)
-        draw_string_Helvetica_12(SCREEN_WIDTH - TOLISS_CP.WINDOWX + 10, SCREEN_HIGHT - TOLISS_CP.WINDOWY + 60, "Dist brut: "..sDistToDest.." NM")
-        draw_string_Helvetica_12(SCREEN_WIDTH - TOLISS_CP.WINDOWX + 10, SCREEN_HIGHT - TOLISS_CP.WINDOWY + 40, "PHASE: "..sAPPhase)
-        draw_string_Helvetica_12(SCREEN_WIDTH - TOLISS_CP.WINDOWX + 10, SCREEN_HIGHT - TOLISS_CP.WINDOWY + 20, "TOD: "..sTOD)
-    end
-
-end -- end function display_values_panel()
-
-function TOLISS_CP.SetDefaultValues()
-
-    TOLISS_CP.WINDOWX = 150 -- Display position from right edge of window
-    TOLISS_CP.WINDOWY = 250 -- Display position from top edge of window
-
-    -----------
-    -- flags --
-    -----------
-    TOLISS_CP.isTodCaptured = false 
-    TOLISS_CP.isMissedApproachWarning = false 
-    TOLISS_CP.isAutopilotPhasePreflight = true 
-
-    ----------------------------------
-    -- variable that affects events --
-    ----------------------------------
-    TOLISS_CP.Flaps_valid = {0.00,0.25,0.50,0.75,1.00}
-    TOLISS_CP.LastFlapSet = REF_FlapLeverRatio
-    TOLISS_CP.last_fuel_total = REF_m_fuel_total -- Important line. Do not delete it
-    TOLISS_CP.Top_of_descent_value = 0
-
-    -----------------------------------
-    -- timer for a specific variable --
-    -----------------------------------
-    TOLISS_CP.Timer = {}
-    TOLISS_CP.Timer.THRLeverMode = 0 
-    TOLISS_CP.Timer.ATHRmode2 = 0 
-    TOLISS_CP.Timer.APVerticalMode = 0
-    TOLISS_CP.Timer.APVerticalArmed = 0
-    TOLISS_CP.Timer.APLateralMode = 0
-    TOLISS_CP.Timer.AP1Engage = 0
-    TOLISS_CP.Timer.ATHRmode = 0
-    TOLISS_CP.Timer.AltitudeTargetChanged = 0
-    TOLISS_CP.Timer.vertical_velocity = 0
-    TOLISS_CP.Timer.gear = 0
-   
-    ---------------------------------------
-    -- variable value related to a timer --
-    ---------------------------------------
-    TOLISS_CP.Value = {}
-    TOLISS_CP.Value.THRLeverMode = REF_THRLeverMode or 0 -- column 1
-    TOLISS_CP.Value.ATHRmode2 = REF_ATHRmode2 or 0 -- column 1
-    TOLISS_CP.Value.APVerticalMode = REF_APVerticalMode or 0-- column 2
-    TOLISS_CP.Value.APVerticalArmed = REF_APVerticalArmed or 0-- column 2 line 2
-    TOLISS_CP.Value.APLateralMode = REF_APLateralMode or 0 -- column 3
-    TOLISS_CP.Value.AP1Engage = REF_AP1Engage or 0 -- column 5
-    TOLISS_CP.Value.ATHRmode = REF_ATHRmode or 0 -- column 5
-    TOLISS_CP.Value.AltitudeTargetChanged = REF_ap_alt_target_value or 0
-    TOLISS_CP.Value.vertical_velocity = REF_vertical_velocity or 0
-    TOLISS_CP.Value.gear = REF_GearLever or 0
-
-    -------------------------------------------------------------------------------
-    -- temporary message to make sure that the default is done in the right time --
-    -------------------------------------------------------------------------------
-    if not TOLISS_CP.Object_sound:is_played("DefaultDone") then 
-        TOLISS_CP.Object_sound:insert("DefaultDone",2)
-    end
-
-    M_UTILITIES.OutputLog("Set Default Values done")
-
-end -- function TOLISS_CP.SetDefaultValues()
 
 function CheckAutoThrustMode()
 
@@ -524,6 +369,23 @@ APVerticalArmed[10] = "OP CLB armed"
 
 end
 
+--++---------------------------------------------------------------------------------------------------++
+--|| TOLISS_CP.EvaluateFlapsValue() check what is the state of the flaps, then play a sound about that || 
+--++---------------------------------------------------------------------------------------------------++
+function TOLISS_CP.EvaluateFlapsValue(value)
+
+    if     value == TOLISS_CP.Flaps_valid[1] then TOLISS_CP.Object_sound:insert("FlapsUP",0.5)
+    elseif value == TOLISS_CP.Flaps_valid[2] then TOLISS_CP.Object_sound:insert("Flaps1",0.5) 
+    elseif value == TOLISS_CP.Flaps_valid[3] then TOLISS_CP.Object_sound:insert("Flaps2",0.5) 
+    elseif value == TOLISS_CP.Flaps_valid[4] then TOLISS_CP.Object_sound:insert("Flaps3",0.5) 
+    elseif value == TOLISS_CP.Flaps_valid[5] then TOLISS_CP.Object_sound:insert("FlapsFULL",0.5) 
+    else return TOLISS_CP.LastFlapSet
+    end
+
+    return value
+
+end
+
 function TOLISS_CP.CheckFlapsAndGear()
 
     if REF_FlapLeverRatio ~= TOLISS_CP.LastFlapSet and M_UTILITIES.ItemListValid(TOLISS_CP.Flaps_valid,REF_FlapLeverRatio) then
@@ -808,83 +670,94 @@ end
 function TOLISS_CP.CheckAutopilotPhase_Done()
 end
 
-function TOLISS_CP_TolissCallouts()
+--+====================================================================+
+--|       T H E   F O L L O W I N G   F U N C T I O N S   A R E        |
+--|            U S E   F O R   I N I T I A L I Z A T I O N             |
+--|                                                                    |
+--| CONVENTION: These functions use Uper Camel Case without underscore |
+--+====================================================================+
 
-    --------------------------------------------------------------------------------------------------
-    -- ================================                                                             --
-    -- IMPORTANT STEP: DO NOT REMOVE IT                                                             --
-    -- ================================                                                             --
-    -- The REF_APPhase value can change in case that a user reload a situation within the ISCS menu --
-    -- So, reset the flag and set de default values.                                                --
-    --------------------------------------------------------------------------------------------------
-    if TOLISS_CP.last_fuel_total < (REF_m_fuel_total-3) or TOLISS_CP.last_fuel_total > (REF_m_fuel_total+3) then
-        TOLISS_CP.Object_sound:reset_isPlayed_flags_to_false(TOLISS_CP.list_sounds)
-        TOLISS_CP.SetDefaultValues()
-        TOLISS_CP.last_fuel_total = REF_m_fuel_total
-        do return end        
-    end
+--++--------------------------------------------------------------------++
+--|| TOLISS_CP.LoadingDataFromDataref() get datarefs for internal usage || 
+--++--------------------------------------------------------------------++
+function TOLISS_CP.LoadingDataFromDataref()
 
-    TOLISS_CP.last_fuel_total = REF_m_fuel_total
-    TOLISS_CP.Object_sound:process_sounds_queue() -- Process all sound in the sound queue
+    DataRef("REF_alpha_floor_mode","toliss_airbus/pfdoutputs/general/alpha_floor_mode","readonly")
+    DataRef("REF_AlphaProtActive","AirbusFBW/AlphaProtActive","readonly")
+    DataRef("REF_ALTisCstr","AirbusFBW/ALTisCstr","readonly")
+    DataRef("REF_altitude_ft_pilot","sim/cockpit2/gauges/indicators/altitude_ft_pilot","readonly")
+    DataRef("REF_AP1Engage","AirbusFBW/AP1Engage","readonly")
+    DataRef("REF_AP2Engage","AirbusFBW/AP2Engage","readonly")
+    DataRef("REF_ap_alt_target_value","toliss_airbus/pfdoutputs/general/ap_alt_target_value","readonly")
+    DataRef("REF_ap_altitude_reference","toliss_airbus/pfdoutputs/general/ap_altitude_reference","readonly")
+    DataRef("REF_APLateralMode","AirbusFBW/APLateralMode","readonly")
+    DataRef("REF_APPhase","AirbusFBW/APPhase","readonly")  
+    DataRef("REF_APPRilluminated","AirbusFBW/APPRilluminated","readonly")
+    DataRef("REF_approach_type","toliss_airbus/pfdoutputs/general/approach_type","readonly")  
+    DataRef("REF_APVerticalArmed","AirbusFBW/APVerticalArmed","readonly")  
+    DataRef("REF_APVerticalMode","AirbusFBW/APVerticalMode","readonly")
+    DataRef("REF_ATHRmode","AirbusFBW/ATHRmode","readonly")
+    DataRef("REF_ATHRmode2","AirbusFBW/ATHRmode2","readonly")
+    DataRef("REF_ConstraintAlt","AirbusFBW/ConstraintAlt","readonly")
+    DataRef("REF_cruise_alt","toliss_airbus/init/cruise_alt","readonly")
+    DataRef("REF_DeptTrans","toliss_airbus/performance/DeptTrans","readonly")
+    DataRef("REF_DestTrans","toliss_airbus/performance/DestTrans","readonly")
+    DataRef("REF_DH","toliss_airbus/performance/DH","readonly")
+    DataRef("REF_DistToDest","AirbusFBW/DistToDest","readonly")
+    DataRef("REF_FlapLeverRatio","AirbusFBW/FlapLeverRatio","readonly")
+    DataRef("REF_FMA1g","AirbusFBW/FMA1g","readonly",0) 
+    DataRef("REF_FMA1w","AirbusFBW/FMA1w","readonly",0) 
+    DataRef("REF_FMA2w","AirbusFBW/FMA2w","readonly",0) 
+    DataRef("REF_GearLever","AirbusFBW/GearLever","readonly")
+    DataRef("REF_GSCapt","AirbusFBW/GSCapt","readonly")
+    DataRef("REF_IASCapt","AirbusFBW/IASCapt","readonly")
+    DataRef("REF_m_fuel_total","sim/flightmodel/weight/m_fuel_total","readonly")
+    DataRef("REF_MCDU1cont2g","AirbusFBW/MCDU1cont2g","readonly",0)
+    DataRef("REF_MCDU1cont3g","AirbusFBW/MCDU1cont3g","readonly",0)
+    DataRef("REF_MDA","toliss_airbus/performance/MDA","readonly")
+    DataRef("REF_radio_altimeter_height_ft_pilot","sim/cockpit2/gauges/indicators/radio_altimeter_height_ft_pilot","readonly")
+    DataRef("REF_SpdBrakeDeployed","AirbusFBW/SpdBrakeDeployed","readonly")    
+    DataRef("REF_THRLeverMode","AirbusFBW/THRLeverMode","readonly")
+    DataRef("REF_thrust_reverser_deploy_ratio","sim/flightmodel2/engines/thrust_reverser_deploy_ratio","readonly",0)    
+    DataRef("REF_total_running_time_sec","sim/time/total_running_time_sec","readonly")
+    DataRef("REF_V1","toliss_airbus/performance/V1","readonly")
+    DataRef("REF_V2","toliss_airbus/performance/V2","readonly")
+    DataRef("REF_vertical_velocity","sim/cockpit/autopilot/vertical_velocity","readonly")
+    DataRef("REF_VGreenDot_value","toliss_airbus/pfdoutputs/general/VGreenDot_value","readonly")
+    DataRef("REF_VR","toliss_airbus/performance/VR","readonly")
+    DataRef("REF_vvi_fpm_pilot","sim/cockpit2/gauges/indicators/vvi_fpm_pilot","readonly")
+    DataRef("REF_XPDRTCASAltSelect","AirbusFBW/XPDRTCASAltSelect","readonly")
 
-    -- Check autopilot phase
-    if      REF_APPhase == 0 then
-            TOLISS_CP.CheckAutopilotPhasePreflight()
-    elseif  REF_APPhase == 1 then
-            TOLISS_CP.CheckFlightModeAnnunciations()
-            TOLISS_CP.CheckAutopilotPhase_TakeOff()
-            TOLISS_CP.CheckFlapsAndGear()
-    elseif  REF_APPhase == 2 then
-            TOLISS_CP.CheckFlightModeAnnunciations()
-            TOLISS_CP.CheckAutopilotPhase_Climb()
-            TOLISS_CP.CheckFlapsAndGear()
-    elseif  REF_APPhase == 3 then
-            TOLISS_CP.CheckFlightModeAnnunciations()
-            TOLISS_CP.CheckAutopilotPhase_Cruize()
-            TOLISS_CP.CheckFlapsAndGear()
-    elseif  REF_APPhase == 4 then
-            TOLISS_CP.CheckFlightModeAnnunciations()
-            TOLISS_CP.CheckAutopilotPhase_Descent()
-            TOLISS_CP.CheckFlapsAndGear()
-    elseif  REF_APPhase == 5 then
-            TOLISS_CP.CheckFlightModeAnnunciations()
-            TOLISS_CP.CheckAutopilotPhase_Approach()
-            TOLISS_CP.CheckFlapsAndGear()
-            TOLISS_CP.isAutopilotPhasePreflight = false
-    elseif  REF_APPhase == 6 then
-            TOLISS_CP.CheckAutopilotPhase_Go_around()
-            TOLISS_CP.CheckFlapsAndGear()
-            TOLISS_CP.CheckFlightModeAnnunciations()
-            TOLISS_CP.isAutopilotPhasePreflight = false
-    elseif  REF_APPhase == 7 then
-            TOLISS_CP.CheckAutopilotPhase_Done()
-    end
+    M_UTILITIES.OutputLog("Loading Data done")
 
-    -----------------------------------
-    -- PHASE 2 WHEN LVR CLB FLASHING --
-    -----------------------------------
-  
-  --- ATTENTION CA JOUE PRES DE TOC
-  -- REF_radio_altimeter_height_ft_pilot
-  --
-    --------------------------------
-    -- PHASE 3 WHEN ALT CRZ REACH --
-    --------------------------------
+end   
 
+--++----------------------------------------------------------------------++
+--|| TOLISS_CP.CreatingCustomDataref() create datarefs for internal usage || 
+--++----------------------------------------------------------------------++
+function TOLISS_CP.CreatingCustomDataref()
 
-    ----------------------------------
-    -- PHASE 4 WHEN PROCEED DESCENT --
-    ----------------------------------
+    DataRefName = "TolissCalloutPro/indicators/distance_to_tod"
 
-    -------------------------------------------------
-    -- PHASE 5 WHEN FINAL APP (APPR AND AP2 PRESS) --
-    -------------------------------------------------
-    -------------------------------------------------------------------------------
-    -- END OF BLOCK TO VERIFY IF MISS APPROCH ALTITUDE IS SET. WAIT FOR 4 SECOND --
-    -------------------------------------------------------------------------------
+    define_shared_DataRef(DataRefName,"Float")
+    DataRef("CUS_distance_to_tod",DataRefName,"writable")
+    CUS_distance_to_tod = 0.00
 
-end -- function TOLISS_CP_TolissCallouts()
+    M_UTILITIES.OutputLog("Creating : "..DataRefName)
 
+    DataRefName = "TolissCalloutPro/indicators/set_default_done"
+
+    define_shared_DataRef(DataRefName,"Float")
+    DataRef("CUS_set_default_done",DataRefName,"writable")
+    CUS_set_default_done = 0.00
+
+    M_UTILITIES.OutputLog("Creating : "..DataRefName)
+
+end 
+
+--++---------------------------------------------------------------------------------------++
+--|| TOLISS_CP.PrepareSoundList() prepare a list of sound file name for the C_SOUNDS usage || 
+--++---------------------------------------------------------------------------------------++
 function TOLISS_CP.PrepareSoundList()
 
     local list_sounds = {}
@@ -990,83 +863,214 @@ function TOLISS_CP.PrepareSoundList()
 
     return list_sounds
 
-end -- function PrepareSoundFile()
+end 
 
-function TOLISS_CP.LoadingDataFromDataref()
+--++---------------------------------------------------------------------------------------++
+--|| TOLISS_CP.SetDefaultValues() important function to initialize some critical variables || 
+--++---------------------------------------------------------------------------------------++
+function TOLISS_CP.SetDefaultValues()
 
-    -- Loading Data from Dataref
+    TOLISS_CP.WINDOWX = 150 -- Display position from right edge of window
+    TOLISS_CP.WINDOWY = 250 -- Display position from top edge of window
 
-    DataRef("REF_alpha_floor_mode","toliss_airbus/pfdoutputs/general/alpha_floor_mode","readonly")
-    DataRef("REF_AlphaProtActive","AirbusFBW/AlphaProtActive","readonly")
-    DataRef("REF_ALTisCstr","AirbusFBW/ALTisCstr","readonly")
-    DataRef("REF_altitude_ft_pilot","sim/cockpit2/gauges/indicators/altitude_ft_pilot","readonly")
-    DataRef("REF_AP1Engage","AirbusFBW/AP1Engage","readonly")
-    DataRef("REF_AP2Engage","AirbusFBW/AP2Engage","readonly")
-    DataRef("REF_ap_alt_target_value","toliss_airbus/pfdoutputs/general/ap_alt_target_value","readonly")
-    DataRef("REF_ap_altitude_reference","toliss_airbus/pfdoutputs/general/ap_altitude_reference","readonly")
-    DataRef("REF_APLateralMode","AirbusFBW/APLateralMode","readonly")
-    DataRef("REF_APPhase","AirbusFBW/APPhase","readonly")  
-    DataRef("REF_APPRilluminated","AirbusFBW/APPRilluminated","readonly")
-    DataRef("REF_approach_type","toliss_airbus/pfdoutputs/general/approach_type","readonly")  
-    DataRef("REF_APVerticalArmed","AirbusFBW/APVerticalArmed","readonly")  
-    DataRef("REF_APVerticalMode","AirbusFBW/APVerticalMode","readonly")
-    DataRef("REF_ATHRmode","AirbusFBW/ATHRmode","readonly")
-    DataRef("REF_ATHRmode2","AirbusFBW/ATHRmode2","readonly")
-    DataRef("REF_ConstraintAlt","AirbusFBW/ConstraintAlt","readonly")
-    DataRef("REF_cruise_alt","toliss_airbus/init/cruise_alt","readonly")
-    DataRef("REF_DeptTrans","toliss_airbus/performance/DeptTrans","readonly")
-    DataRef("REF_DestTrans","toliss_airbus/performance/DestTrans","readonly")
-    DataRef("REF_DH","toliss_airbus/performance/DH","readonly")
-    DataRef("REF_DistToDest","AirbusFBW/DistToDest","readonly")
-    DataRef("REF_FlapLeverRatio","AirbusFBW/FlapLeverRatio","readonly")
-    DataRef("REF_FMA1g","AirbusFBW/FMA1g","readonly",0) 
-    DataRef("REF_FMA1w","AirbusFBW/FMA1w","readonly",0) 
-    DataRef("REF_FMA2w","AirbusFBW/FMA2w","readonly",0) 
-    DataRef("REF_GearLever","AirbusFBW/GearLever","readonly")
-    DataRef("REF_GSCapt","AirbusFBW/GSCapt","readonly")
-    DataRef("REF_IASCapt","AirbusFBW/IASCapt","readonly")
-    DataRef("REF_m_fuel_total","sim/flightmodel/weight/m_fuel_total","readonly")
-    DataRef("REF_MCDU1cont2g","AirbusFBW/MCDU1cont2g","readonly",0)
-    DataRef("REF_MCDU1cont3g","AirbusFBW/MCDU1cont3g","readonly",0)
-    DataRef("REF_MDA","toliss_airbus/performance/MDA","readonly")
-    DataRef("REF_radio_altimeter_height_ft_pilot","sim/cockpit2/gauges/indicators/radio_altimeter_height_ft_pilot","readonly")
-    DataRef("REF_SpdBrakeDeployed","AirbusFBW/SpdBrakeDeployed","readonly")    
-    DataRef("REF_THRLeverMode","AirbusFBW/THRLeverMode","readonly")
-    DataRef("REF_thrust_reverser_deploy_ratio","sim/flightmodel2/engines/thrust_reverser_deploy_ratio","readonly",0)    
-    DataRef("REF_total_running_time_sec","sim/time/total_running_time_sec","readonly")
-    DataRef("REF_V1","toliss_airbus/performance/V1","readonly")
-    DataRef("REF_V2","toliss_airbus/performance/V2","readonly")
-    DataRef("REF_vertical_velocity","sim/cockpit/autopilot/vertical_velocity","readonly")
-    DataRef("REF_VGreenDot_value","toliss_airbus/pfdoutputs/general/VGreenDot_value","readonly")
-    DataRef("REF_VR","toliss_airbus/performance/VR","readonly")
-    DataRef("REF_vvi_fpm_pilot","sim/cockpit2/gauges/indicators/vvi_fpm_pilot","readonly")
-    DataRef("REF_XPDRTCASAltSelect","AirbusFBW/XPDRTCASAltSelect","readonly")
+    -----------
+    -- flags --
+    -----------
+    TOLISS_CP.isTodCaptured = false 
+    TOLISS_CP.isMissedApproachWarning = false 
+    TOLISS_CP.isAutopilotPhasePreflight = true 
 
-    M_UTILITIES.OutputLog("Loading Data done")
+    ----------------------------------
+    -- variable that affects events --
+    ----------------------------------
+    TOLISS_CP.Flaps_valid = {0.00,0.25,0.50,0.75,1.00}
+    TOLISS_CP.LastFlapSet = REF_FlapLeverRatio
+    TOLISS_CP.last_fuel_total = REF_m_fuel_total -- Important line. Do not delete it
+    TOLISS_CP.Top_of_descent_value = 0
 
-end -- function LoadingDataFromDataref()    
+    -----------------------------------
+    -- timer for a specific variable --
+    -----------------------------------
+    TOLISS_CP.Timer = {}
+    TOLISS_CP.Timer.THRLeverMode = 0 
+    TOLISS_CP.Timer.ATHRmode2 = 0 
+    TOLISS_CP.Timer.APVerticalMode = 0
+    TOLISS_CP.Timer.APVerticalArmed = 0
+    TOLISS_CP.Timer.APLateralMode = 0
+    TOLISS_CP.Timer.AP1Engage = 0
+    TOLISS_CP.Timer.ATHRmode = 0
+    TOLISS_CP.Timer.AltitudeTargetChanged = 0
+    TOLISS_CP.Timer.vertical_velocity = 0
+    TOLISS_CP.Timer.gear = 0
+   
+    ---------------------------------------
+    -- variable value related to a timer --
+    ---------------------------------------
+    TOLISS_CP.Value = {}
+    TOLISS_CP.Value.THRLeverMode = REF_THRLeverMode or 0 -- column 1
+    TOLISS_CP.Value.ATHRmode2 = REF_ATHRmode2 or 0 -- column 1
+    TOLISS_CP.Value.APVerticalMode = REF_APVerticalMode or 0-- column 2
+    TOLISS_CP.Value.APVerticalArmed = REF_APVerticalArmed or 0-- column 2 line 2
+    TOLISS_CP.Value.APLateralMode = REF_APLateralMode or 0 -- column 3
+    TOLISS_CP.Value.AP1Engage = REF_AP1Engage or 0 -- column 5
+    TOLISS_CP.Value.ATHRmode = REF_ATHRmode or 0 -- column 5
+    TOLISS_CP.Value.AltitudeTargetChanged = REF_ap_alt_target_value or 0
+    TOLISS_CP.Value.vertical_velocity = REF_vertical_velocity or 0
+    TOLISS_CP.Value.gear = REF_GearLever or 0
 
-function TOLISS_CP.CreatingCustomDataref()
+    -------------------------------------------------------------------------------
+    -- temporary message to make sure that the default is done in the right time --
+    -------------------------------------------------------------------------------
+    if not TOLISS_CP.Object_sound:is_played("DefaultDone") then 
+        TOLISS_CP.Object_sound:insert("DefaultDone",2)
+    end
 
-    DataRefName = "TolissCalloutPro/indicators/distance_to_tod"
+    M_UTILITIES.OutputLog("Set Default Values done")
 
-    define_shared_DataRef(DataRefName,"Float")
-    DataRef("CUS_distance_to_tod",DataRefName,"writable")
-    CUS_distance_to_tod = 0.00
+end 
 
-    M_UTILITIES.OutputLog("Creating : "..DataRefName)
+--+====================================================================+
+--|       T H E   F O L L O W I N G   F U N C T I O N S   A R E        |
+--|           U S E   I N   "DO_EVERY..."  F U N C T I O N S           |
+--|                                                                    |
+--| CONVENTION: These functions use Uper Camel Case without underscore |
+--+====================================================================+
 
-    DataRefName = "TolissCalloutPro/indicators/set_default_done"
+--++---------------------------------------------------------------------------------------------------++
+--|| TOLISS_CP_DisplayValuesPanel() Display some informations for the Toliss Callout Pro into a widget || 
+--++---------------------------------------------------------------------------------------------------++
+function TOLISS_CP_DisplayValuesPanel()
+    
+    local sGS = M_UTILITIES.Round(REF_GSCapt)
+    local sIAS = M_UTILITIES.Round(REF_IASCapt)
+    local sALT = M_UTILITIES.Round(REF_altitude_ft_pilot)
+    local sVSI = M_UTILITIES.Round(REF_vvi_fpm_pilot)
+    local sV1 = REF_V1
+    local sVR = REF_VR
+    local sREV = M_UTILITIES.Round(REF_thrust_reverser_deploy_ratio)
+    local sDistToDest = M_UTILITIES.Round(REF_DistToDest,2)
+    local sAPPhase = REF_APPhase
+    local sTOD = ""
 
-    define_shared_DataRef(DataRefName,"Float")
-    DataRef("CUS_set_default_done",DataRefName,"writable")
-    CUS_set_default_done = 0.00
+    if TOLISS_CP.isTodCaptured and TOLISS_CP.Top_of_descent_value ~= 0 then
+        sTOD = M_UTILITIES.Round(TOLISS_CP.Top_of_descent_value,2).." NM"
+    end
 
-    M_UTILITIES.OutputLog("Creating : "..DataRefName)
+    XPLMSetGraphicsState(0,0,0,1,1,0,0)
+    
+    -- DRAW THE TITLE BOX (BOX COLOR CHANGE DEPENDING A WARNING)
+    if REF_APPhase == 3 and TOLISS_CP.Top_of_descent_value == 0 then
+        graphics.set_color(1, 0, 0, 0.8)
+    else
+        graphics.set_color(0.12,0.54,0.56, 1)
+    end
 
-end -- function CreatingCustomDataref()
+    graphics.draw_rectangle(SCREEN_WIDTH - TOLISS_CP.WINDOWX + 0, SCREEN_HIGHT - TOLISS_CP.WINDOWY + 200, SCREEN_WIDTH - TOLISS_CP.WINDOWX + 180, SCREEN_HIGHT - TOLISS_CP.WINDOWY + 220)
 
--- MAIN CALLS   
+    -- DRAW THE TITLE 
+    graphics.set_color(1, 1, 1, 0.8)
+    draw_string_Helvetica_18(SCREEN_WIDTH - TOLISS_CP.WINDOWX + 5, SCREEN_HIGHT - TOLISS_CP.WINDOWY + 202, "Toliss Callouts")       
+    
+    -- DRAW THE TRANSPARENT BACKGROUND
+    graphics.set_color(0, 0, 0, 0.5) 
+    graphics.draw_rectangle(SCREEN_WIDTH - TOLISS_CP.WINDOWX + 0, SCREEN_HIGHT - TOLISS_CP.WINDOWY + 10, SCREEN_WIDTH - TOLISS_CP.WINDOWX + 180, SCREEN_HIGHT - TOLISS_CP.WINDOWY + 200)
+        
+    glColor4f(M_COLORS.YELLOW.red, M_COLORS.YELLOW.green, M_COLORS.YELLOW.blue, 1)
+    
+    draw_string_Times_Roman_24(800, 900, "PHASE          = "..REF_APPhase or "")
+    draw_string_Times_Roman_24(800, 870, "THRLeverMode   = "..REF_THRLeverMode or "")
+    draw_string_Times_Roman_24(800, 840, "ATHRmode2      = "..REF_ATHRmode2 or "")
+    draw_string_Times_Roman_24(800, 810, "APVerticalMode = "..REF_APVerticalMode or "")
+    draw_string_Times_Roman_24(800, 780, "APLateralMode  = "..REF_APLateralMode or "")
+    draw_string_Times_Roman_24(800, 750, "TOLISS_CP.Value.vertical  = "..TOLISS_CP.Value.vertical_velocity or "")
+    draw_string_Times_Roman_24(800, 720, "REF_vertical   = "..REF_vertical_velocity or "")
+    draw_string_Times_Roman_24(800, 690, "LUA_RUN        = "..LUA_RUN)
+    
+    -- DRAW THE PARAMETERS VALUES
+    graphics.set_color(1, 1, 1, 0.8)
+
+    if REF_APPhase == 3 and TOLISS_CP.Top_of_descent_value == 0 then
+        draw_string_Helvetica_12(SCREEN_WIDTH - TOLISS_CP.WINDOWX + 10, SCREEN_HIGHT - TOLISS_CP.WINDOWY + 180, "WARNING")
+        draw_string_Helvetica_12(SCREEN_WIDTH - TOLISS_CP.WINDOWX + 10, SCREEN_HIGHT - TOLISS_CP.WINDOWY + 160, "PLEASE PRESS")
+        draw_string_Helvetica_12(SCREEN_WIDTH - TOLISS_CP.WINDOWX + 10, SCREEN_HIGHT - TOLISS_CP.WINDOWY + 140 , "PERF IN THE")
+        draw_string_Helvetica_12(SCREEN_WIDTH - TOLISS_CP.WINDOWX + 10, SCREEN_HIGHT - TOLISS_CP.WINDOWY + 120, "LEFT FMS")
+        draw_string_Helvetica_12(SCREEN_WIDTH - TOLISS_CP.WINDOWX + 10, SCREEN_HIGHT - TOLISS_CP.WINDOWY + 100, "TO CATCH")
+        draw_string_Helvetica_12(SCREEN_WIDTH - TOLISS_CP.WINDOWX + 10, SCREEN_HIGHT - TOLISS_CP.WINDOWY + 80, " THE TOD VALUE")
+        draw_string_Helvetica_12(SCREEN_WIDTH - TOLISS_CP.WINDOWX + 10, SCREEN_HIGHT - TOLISS_CP.WINDOWY + 60, "Dist brut: "..sDistToDest.." NM")
+        draw_string_Helvetica_12(SCREEN_WIDTH - TOLISS_CP.WINDOWX + 10, SCREEN_HIGHT - TOLISS_CP.WINDOWY + 40, "tot_run_sec: "..M_UTILITIES.Round(REF_total_running_time_sec,2))
+        draw_string_Helvetica_12(SCREEN_WIDTH - TOLISS_CP.WINDOWX + 10, SCREEN_HIGHT - TOLISS_CP.WINDOWY + 20, "PHASE: "..sAPPhase)
+    else
+        draw_string_Helvetica_12(SCREEN_WIDTH - TOLISS_CP.WINDOWX + 10, SCREEN_HIGHT - TOLISS_CP.WINDOWY + 180, "GS: "..sGS.." m/sec")
+        draw_string_Helvetica_12(SCREEN_WIDTH - TOLISS_CP.WINDOWX + 10, SCREEN_HIGHT - TOLISS_CP.WINDOWY + 160, "IAS: "..sIAS.." Kts")
+        draw_string_Helvetica_12(SCREEN_WIDTH - TOLISS_CP.WINDOWX + 10, SCREEN_HIGHT - TOLISS_CP.WINDOWY + 140 , "ALT: "..sALT.." VSI: "..sVSI)
+        draw_string_Helvetica_12(SCREEN_WIDTH - TOLISS_CP.WINDOWX + 10, SCREEN_HIGHT - TOLISS_CP.WINDOWY + 120, "BUG_V1: "..sV1)
+        draw_string_Helvetica_12(SCREEN_WIDTH - TOLISS_CP.WINDOWX + 10, SCREEN_HIGHT - TOLISS_CP.WINDOWY + 100, "BUG_VR: "..sVR)
+        draw_string_Helvetica_12(SCREEN_WIDTH - TOLISS_CP.WINDOWX + 10, SCREEN_HIGHT - TOLISS_CP.WINDOWY + 80, "REV: "..sREV)
+        draw_string_Helvetica_12(SCREEN_WIDTH - TOLISS_CP.WINDOWX + 10, SCREEN_HIGHT - TOLISS_CP.WINDOWY + 60, "Dist brut: "..sDistToDest.." NM")
+        draw_string_Helvetica_12(SCREEN_WIDTH - TOLISS_CP.WINDOWX + 10, SCREEN_HIGHT - TOLISS_CP.WINDOWY + 40, "PHASE: "..sAPPhase)
+        draw_string_Helvetica_12(SCREEN_WIDTH - TOLISS_CP.WINDOWX + 10, SCREEN_HIGHT - TOLISS_CP.WINDOWY + 20, "TOD: "..sTOD)
+    end
+
+end 
+
+--++--------------------------------------------------------------------------++
+--|| TOLISS_CP_TolissCallouts() is the main process of the Toliss Callout Pro || 
+--++--------------------------------------------------------------------------++
+function TOLISS_CP_TolissCallouts()
+
+    -- IMPORTANT STEP : DO NOT REMOVE IT (IN CASE OF RELOADING SITUATION FROM ISCS)
+    if TOLISS_CP.last_fuel_total < (REF_m_fuel_total-3) or TOLISS_CP.last_fuel_total > (REF_m_fuel_total+3) then
+        TOLISS_CP.Object_sound:reset_isPlayed_flags_to_false(TOLISS_CP.list_sounds)
+        TOLISS_CP.SetDefaultValues()
+        TOLISS_CP.last_fuel_total = REF_m_fuel_total
+        do return end        
+    else
+        TOLISS_CP.last_fuel_total = REF_m_fuel_total
+    end
+
+    TOLISS_CP.Object_sound:process_sounds_queue() -- Process all sound in the sound queue
+
+    -- CHECK AUTOPILOT PHASE
+    if      REF_APPhase == 0 then
+            TOLISS_CP.CheckAutopilotPhasePreflight()
+    elseif  REF_APPhase == 1 then
+            TOLISS_CP.CheckFlightModeAnnunciations()
+            TOLISS_CP.CheckAutopilotPhase_TakeOff()
+            TOLISS_CP.CheckFlapsAndGear()
+    elseif  REF_APPhase == 2 then
+            TOLISS_CP.CheckFlightModeAnnunciations()
+            TOLISS_CP.CheckAutopilotPhase_Climb()
+            TOLISS_CP.CheckFlapsAndGear()
+    elseif  REF_APPhase == 3 then
+            TOLISS_CP.CheckFlightModeAnnunciations()
+            TOLISS_CP.CheckAutopilotPhase_Cruize()
+            TOLISS_CP.CheckFlapsAndGear()
+    elseif  REF_APPhase == 4 then
+            TOLISS_CP.CheckFlightModeAnnunciations()
+            TOLISS_CP.CheckAutopilotPhase_Descent()
+            TOLISS_CP.CheckFlapsAndGear()
+    elseif  REF_APPhase == 5 then
+            TOLISS_CP.CheckFlightModeAnnunciations()
+            TOLISS_CP.CheckAutopilotPhase_Approach()
+            TOLISS_CP.CheckFlapsAndGear()
+            TOLISS_CP.isAutopilotPhasePreflight = false
+    elseif  REF_APPhase == 6 then
+            TOLISS_CP.CheckAutopilotPhase_Go_around()
+            TOLISS_CP.CheckFlapsAndGear()
+            TOLISS_CP.CheckFlightModeAnnunciations()
+            TOLISS_CP.isAutopilotPhasePreflight = false
+    elseif  REF_APPhase == 7 then
+            TOLISS_CP.CheckAutopilotPhase_Done()
+    end
+end 
+
+--+====================================================================+
+--|       T H E   F O L L O W I N G   I S   T H E    M A I N           |
+--|                          S E C T I O N                             |
+--|                                                                    |
+--| CONVENTION: These functions use Uper Camel Case without underscore |
+--+====================================================================+
+
 if  (PLANE_ICAO == "A319" and AIRCRAFT_FILENAME == "a319.acf") or
     (PLANE_ICAO == "A321" and AIRCRAFT_FILENAME == "a321.acf") then
 
