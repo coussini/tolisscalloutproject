@@ -490,7 +490,7 @@ function TOLISS_CP.CheckAutopilotPhase_TakeOff()
      ]]
 
     -- TAKE-OFF SPEEDS EVENT        
-    if REF_IASCapt > 78 and not TOLISS_CP.Object_sound:is_played("ThrustSet") then 
+    if REF_IASCapt > 78 and REF_IASCapt < 95 and not TOLISS_CP.Object_sound:is_played("ThrustSet") then 
         TOLISS_CP.Object_sound:insert("ThrustSet",0) 
     end
 
