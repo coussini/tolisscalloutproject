@@ -323,13 +323,13 @@ APVerticalArmed[10] = "OP CLB armed"
     ]]
 
     if     TOLISS_CP.Value.APVerticalArmed ~= REF_APVerticalArmed then
-        TOLISS_CP.Timer.APVerticalArmed = M_UTILITIES.SetTimer(10)
+        TOLISS_CP.Timer.APVerticalArmed = M_UTILITIES.SetTimer(4)
         TOLISS_CP.Value.APVerticalArmed = REF_APVerticalArmed
         if     REF_APVerticalArmed == 6 then TOLISS_CP.Object_sound:set_isPlayed_flags("Alt",false) 
         elseif REF_APVerticalArmed == 8 then TOLISS_CP.Object_sound:set_isPlayed_flags("Alt",false) 
         end 
     elseif TOLISS_CP.Value.AltitudeTargetChanged ~= REF_ap_alt_target_value then
-        TOLISS_CP.Timer.AltitudeTargetChanged = M_UTILITIES.SetTimer(10)
+        TOLISS_CP.Timer.AltitudeTargetChanged = M_UTILITIES.SetTimer(4)
         TOLISS_CP.Value.AltitudeTargetChanged = REF_ap_alt_target_value
         if     REF_APVerticalArmed == 6 then TOLISS_CP.Object_sound:set_isPlayed_flags("Alt",false) 
         elseif REF_APVerticalArmed == 8 then TOLISS_CP.Object_sound:set_isPlayed_flags("Alt",false) 
