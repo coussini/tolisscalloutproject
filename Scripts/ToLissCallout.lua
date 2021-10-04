@@ -494,7 +494,7 @@ function TOLISS_CP.CheckAutopilotPhase_TakeOff()
         TOLISS_CP.Object_sound:insert("ThrustSet",0) 
     end
 
-    if REF_IASCapt > 98 and not TOLISS_CP.Object_sound:is_played("100kts") then 
+    if REF_IASCapt > 98 and REF_IASCapt < 105 and not TOLISS_CP.Object_sound:is_played("100kts") then 
         TOLISS_CP.Object_sound:insert("100kts",0) 
     end
         
