@@ -15,7 +15,10 @@ Kaleidoscope Utilities module By Coussini 2021
 --+==================================================================+
 --| They will be available when this library has loaded with require |
 --+==================================================================+
-    local M_UTILITIES = {}
+local M_UTILITIES = {}
+ 
+-- dataref required for M_UTILITIES
+DataRef("M_UTILITIES_total_running_time_sec","sim/time/total_running_time_sec","readonly")
 
 --+=============================================================+
 --|   T H E   F O L L O W I N G   A R E   H I G H   L E V E L   |
@@ -249,8 +252,8 @@ end
 --|| M_UTILITIES.Fsize() Return a time limit value for a timer ||
 --++-----------------------------------------------------------++
 function M_UTILITIES.SetTimer(time)
-     M_UTILITIES.OutputLog("total_running_time_sec"..REF_total_running_time_sec)
-    return REF_total_running_time_sec + time
+     M_UTILITIES.OutputLog("total_running_time_sec"..M_UTILITIES_total_running_time_sec)
+    return M_UTILITIES_total_running_time_sec + time
 end
 
 --++-----------------------------------------------------------------------------++
