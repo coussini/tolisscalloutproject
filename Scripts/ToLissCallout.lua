@@ -43,9 +43,10 @@ end
 --++-------------------------------------------------------------------++
 function TolissCP.CheckFmaAutoThrustMode()
 
+    --toliss_airbus/pfdoutputs/general/athr_thrust_mode
     -- ARMED A/THR MODE
     if TolissCP.Value.THRLeverMode ~= DATAREF_THRLeverMode then
-        TolissCP.Timer.THRLeverMode = M_UTILITIES.SetTimer(2)
+        TolissCP.Timer.THRLeverMode = M_UTILITIES.SetTimer(4)
         TolissCP.Value.THRLeverMode = DATAREF_THRLeverMode
         if     DATAREF_THRLeverMode == 1 then TolissCP.Object_sound:set_isPlayed_flags("ManThrust",false) 
         elseif DATAREF_THRLeverMode == 2 then TolissCP.Object_sound:set_isPlayed_flags("ManFlex",false) 
@@ -65,7 +66,7 @@ function TolissCP.CheckFmaAutoThrustMode()
 
     -- MODE THAT THE AUTO THRUST IS ENGAGED
     if TolissCP.Value.ATHRmode2 ~= DATAREF_ATHRmode2 then
-        TolissCP.Timer.ATHRmode2 = M_UTILITIES.SetTimer(2)
+        TolissCP.Timer.ATHRmode2 = M_UTILITIES.SetTimer(4)
         TolissCP.Value.ATHRmode2 = DATAREF_ATHRmode2
         if     DATAREF_ATHRmode2 == 1 then TolissCP.Object_sound:set_isPlayed_flags("ThrustClimb",false) 
         elseif DATAREF_ATHRmode2 == 2 then TolissCP.Object_sound:set_isPlayed_flags("ThrustIdle",false) 
@@ -91,7 +92,7 @@ end
 function TolissCP.CheckFmaVerticalMode()
 
     if TolissCP.Value.APVerticalMode ~= DATAREF_APVerticalMode then
-        TolissCP.Timer.APVerticalMode = M_UTILITIES.SetTimer(2)
+        TolissCP.Timer.APVerticalMode = M_UTILITIES.SetTimer(4)
         TolissCP.Value.APVerticalMode = DATAREF_APVerticalMode
         if     DATAREF_APVerticalMode == 0 then TolissCP.Object_sound:set_isPlayed_flags("SRS",false) 
         elseif DATAREF_APVerticalMode == 1 then TolissCP.Object_sound:set_isPlayed_flags("Climb",false) 
@@ -705,6 +706,7 @@ function TolissCP.LoadingDataFromDataref()
     DataRef("DATAREF_total_running_time_sec","sim/time/total_running_time_sec","readonly")
     DataRef("DATAREF_V1","toliss_airbus/performance/V1","readonly")
     DataRef("DATAREF_V2","toliss_airbus/performance/V2","readonly")
+    DataRef("DATAREF_athr_thrust_mode","toliss_airbus/pfdoutputs/general/athr_thrust_mode","readonly")
     DataRef("DATAREF_vertical_velocity","sim/cockpit/autopilot/vertical_velocity","readonly")
     DataRef("DATAREF_VGreenDot_value","toliss_airbus/pfdoutputs/general/VGreenDot_value","readonly")
     DataRef("DATAREF_VR","toliss_airbus/performance/VR","readonly")
@@ -962,14 +964,15 @@ function TolissCP_DisplayValuesPanel()
         
     glColor4f(M_COLORS.YELLOW.red, M_COLORS.YELLOW.green, M_COLORS.YELLOW.blue, 1)
     
-    draw_string_Times_Roman_24(800, 900, "PHASE          = "..DATAREF_APPhase or "")
-    draw_string_Times_Roman_24(800, 870, "THRLeverMode   = "..DATAREF_THRLeverMode or "")
-    draw_string_Times_Roman_24(800, 840, "ATHRmode2      = "..DATAREF_ATHRmode2 or "")
-    draw_string_Times_Roman_24(800, 810, "APVerticalMode = "..DATAREF_APVerticalMode or "")
-    draw_string_Times_Roman_24(800, 780, "APLateralMode  = "..DATAREF_APLateralMode or "")
-    draw_string_Times_Roman_24(800, 750, "TolissCP.Value.vertical  = "..TolissCP.Value.vertical_velocity or "")
-    draw_string_Times_Roman_24(800, 720, "DATAREF_vertical   = "..DATAREF_vertical_velocity or "")
-    draw_string_Times_Roman_24(800, 690, "LUA_RUN        = "..LUA_RUN)
+    draw_string_Times_Roman_24(800, 900, "PHASE            = "..DATAREF_APPhase or "")
+    draw_string_Times_Roman_24(800, 870, "THRLeverMode     = "..DATAREF_THRLeverMode or "")
+    draw_string_Times_Roman_24(800, 840, "ATHRmode2        = "..DATAREF_ATHRmode2 or "")
+    draw_string_Times_Roman_24(800, 810, "athr_thrust_mode = "..DATAREF_athr_thrust_mode or "")
+    draw_string_Times_Roman_24(800, 780, "APVerticalMode   = "..DATAREF_APVerticalMode or "")
+    draw_string_Times_Roman_24(800, 750, "APLateralMode    = "..DATAREF_APLateralMode or "")
+    draw_string_Times_Roman_24(800, 720, "Value.vertical   = "..TolissCP.Value.vertical_velocity or "")
+    draw_string_Times_Roman_24(800, 690, "DATAREF_vertical = "..DATAREF_vertical_velocity or "")
+    draw_string_Times_Roman_24(800, 660, "LUA_RUN          = "..LUA_RUN)
     
     -- DRAW THE PARAMETERS VALUES
     graphics.set_color(1, 1, 1, 0.8)
