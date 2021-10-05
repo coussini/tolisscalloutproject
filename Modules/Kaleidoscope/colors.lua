@@ -20,7 +20,7 @@ local M_UTILITIES = require("Kaleidoscope.utilities")
 --+==================================================================+
 --| They will be available when this library has loaded with require |
 --+==================================================================+
-    local M_COLORS = {}
+local M_COLORS = {}
 
 --++---------------------------------------------------------------------------++
 --|| M_COLORS.Hex2RGB() return the individual R,G,B values for a one hex color || 
@@ -67,7 +67,7 @@ function M_COLORS.Hex2Array(hex)
 end
     
     ---------------------------------------------
-    -- Basic 16 VGA colors defined in the HTML --
+    -- BASIC 16 VGA COLORS DEFINED IN THE HTML --
     ---------------------------------------------
     M_COLORS.AQUA = {red=0,green=1,blue=1}
     M_COLORS.BLACK = {red=0,green=0,blue=0}
@@ -89,6 +89,7 @@ end
     -------------------
     -- THEMES COLORS --
     -------------------
+
     -- XPLANE11 --
     --gunmetal (243241)
     --Rich Black FOGRA 29 (131C24)
@@ -325,9 +326,9 @@ function M_COLORS.SetColors(alpha,color_center,color_border,color_text)
     color_text = color_text or color_center
 
     local colors = {
-        {rgb = color_center,alpha = alpha}, -- This is the default color for a drawing
-        {rgb = color_border,alpha = alpha}, -- This can be a border color or a emboss color effect 
-        {rgb = color_text,alpha = alpha} -- This is a color for a writing 
+        {rgb = color_center,alpha = alpha}, 
+        {rgb = color_border,alpha = alpha},  
+        {rgb = color_text,alpha = alpha}  
     }
 
     return colors
@@ -345,9 +346,9 @@ function M_COLORS.SetColorsTheme(alpha,theme_name)
     color_text = M_COLORS[theme_name].text
 
     local colors = {
-        {rgb = color_center,alpha = alpha}, -- This is the default color for a drawing
-        {rgb = color_border,alpha = alpha}, -- This can be a border color or a emboss color effect 
-        {rgb = color_text,alpha = alpha} -- This is a color for a writing 
+        {rgb = color_center,alpha = alpha}, 
+        {rgb = color_border,alpha = alpha}, 
+        {rgb = color_text,alpha = alpha} 
     }
 
     return colors
@@ -365,9 +366,9 @@ function M_COLORS.SetColorsThemeButton(alpha,theme_name)
     color_text = M_COLORS[theme_name].text_button
 
     local colors = {
-        {rgb = color_center,alpha = alpha}, -- This is the default color for a drawing
-        {rgb = color_border,alpha = alpha}, -- This can be a border color or a emboss color effect 
-        {rgb = color_text,alpha = alpha} -- This is a color for a writing 
+        {rgb = color_center,alpha = alpha}, 
+        {rgb = color_border,alpha = alpha}, 
+        {rgb = color_text,alpha = alpha} 
     }
 
     return colors

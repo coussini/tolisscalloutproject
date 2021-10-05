@@ -15,7 +15,7 @@ Kaleidoscope C_SOUNDS class By Coussini 2021
 --+========================================+
 local M_UTILITIES = require("Kaleidoscope.utilities")
  
--- dataref required for C_SOUNDS class
+-- DATAREF REQUIRED FOR C_SOUNDS CLASS
 DataRef("C_SOUNDS_total_running_time_sec","sim/time/total_running_time_sec","readonly")
 
 --+======================================================================+
@@ -29,20 +29,20 @@ DataRef("C_SOUNDS_total_running_time_sec","sim/time/total_running_time_sec","rea
 local C_SOUNDS = {
     gap = 0.25,
     directory = "",
-    -----------------------------------------
-    -- Sound imformation --
-    ----------------------------------------
-    sounds_informations = {}, -- informations for each sounds (indexed by "sound name")
--- The sounds_informations contains these folowing element 
+    -----------------------
+    -- SOUND IMFORMATION --
+    -----------------------
+    sounds_informations = {}, -- Informations for each sounds (indexed by "sound name")
+--    The sounds_informations contains these folowing element:
 --    isPlayed : a played status for each sound sources (use a name as index)
 --    source_pointer : a pointer for each sound sources (use a name as index)
 --    duration : a duration in seconds for each sound sources (use a name as index)
     -----------------------------------------
-    -- Stack for processing sound sources --
+    -- STACK FOR PROCESSING SOUND SOURCES --
     ----------------------------------------
-    sounds_queue = {} -- (indexed by number)
+    sounds_queue = {} -- (INDEXED BY NUMBER)
 }
--- The sounds_queue contains these folowing element
+--    The sounds_queue contains these folowing element:
 --    name = "", -- the sound name as reference (for to tostring for any number)
 --    stop_at = 0, -- when the sound will be playing (time out)
 --    treated = false -- a treated status to know if a sound sources was played
@@ -84,7 +84,7 @@ function C_SOUNDS:initialise_the_sounds_informations(list_sounds,sound_gain)
     for a_sound = 1, #list_sounds do
         local sound_name = tostring(list_sounds[a_sound])
         local file_name = self.directory..sound_name..".wav"
-        -- Get duration 
+        -- GET DURATION 
         local libs_file = io.open(file_name,"r")
         local size = M_UTILITIES.FindSize(libs_file)
         libs_file:close()
@@ -174,7 +174,7 @@ function C_SOUNDS:play_the_first(index)
     play_sound(self.sounds_informations[sound_name].source_pointer)
     self.sounds_queue[1].stop_at = M_UTILITIES.SetTimer(self.sounds_informations[sound_name].duration)
     M_UTILITIES.OutputLog("play_the_first : "..sound_name.." stop At "..self.sounds_queue[1].stop_at.." current "..C_SOUNDS_total_running_time_sec)
-end -- function PlayASond(index)
+end 
 
 --++-------------------------------------------------------------------------------------------------------------++
 --|| C_SOUNDS:process_sounds_queue() Check if a sound can be play and check if a sound has finished to delete it || 
@@ -192,6 +192,6 @@ function C_SOUNDS:process_sounds_queue()
             end
         end
     end
-end -- function M_SOUNDS.ProcessStackOfSounds()
+end 
 
 return C_SOUNDS

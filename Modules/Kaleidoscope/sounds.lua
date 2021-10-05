@@ -20,23 +20,22 @@ local M_UTILITIES = require("Kaleidoscope.utilities")
 --+==================================================================+
 --| They will be available when this library has loaded with require |
 --+==================================================================+
-    local M_SOUNDS = {}
-    
-    M_SOUNDS.GAP = 0.25 -- second of gap between sounds
-    M_SOUNDS.SOUNDDIR = ""
+local M_SOUNDS = {}
 
-    M_SOUNDS.isPlayed = {} -- table that contains list of sound sources with a status (is played)
-    M_SOUNDS.SoundPointer = {} -- pointer in the sound source file
+M_SOUNDS.GAP = 0.25 -- second of gap between sounds
+M_SOUNDS.SOUNDDIR = ""
 
-    -- STACK (Sound Table)
-    M_SOUNDS.TableSoundPointer = {}
-    M_SOUNDS.TableSoundDuration = {}
-    M_SOUNDS.TableSoundStartAt = {}
-    M_SOUNDS.TableSoundStopAt = {}
-    M_SOUNDS.TableSoundisPlaying = {}
-    -- GLOBAL VARIABLE
-    M_SOUNDS.CurrentIndexPlaying = nil
+M_SOUNDS.isPlayed = {} -- table that contains list of sound sources with a status (is played)
+M_SOUNDS.SoundPointer = {} -- pointer in the sound source file
 
+-- STACK (Sound Table)
+M_SOUNDS.TableSoundPointer = {}
+M_SOUNDS.TableSoundDuration = {}
+M_SOUNDS.TableSoundStartAt = {}
+M_SOUNDS.TableSoundStopAt = {}
+M_SOUNDS.TableSoundisPlaying = {}
+-- GLOBAL VARIABLE
+M_SOUNDS.CurrentIndexPlaying = nil
 
 function M_SOUNDS.SetSoundsDirectory(sound_directory)
     

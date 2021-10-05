@@ -20,7 +20,7 @@ local C_SOUNDS = require("Kaleidoscope.classes.C_SOUNDS")
 --+==================================+
 --|  L O C A L   V A R I A B L E S   |
 --+==================================+
-    local TolissCP = {} -- Toliss Callout Pro
+local TolissCP = {} -- Toliss Callout Pro
 
 --+====================================================================+
 --|       T H E   F O L L O W I N G   A R E   H I G H   L E V E L      |
@@ -43,6 +43,7 @@ end
 --++-------------------------------------------------------------------++
 function TolissCP.CheckFmaAutoThrustMode()
 
+    -- ARMED A/THR MODE
     if TolissCP.Value.THRLeverMode ~= DATAREF_THRLeverMode then
         TolissCP.Timer.THRLeverMode = M_UTILITIES.SetTimer(2)
         TolissCP.Value.THRLeverMode = DATAREF_THRLeverMode
@@ -62,6 +63,7 @@ function TolissCP.CheckFmaAutoThrustMode()
         end 
     end
 
+    -- MODE THAT THE AUTO THRUST IS ENGAGED
     if TolissCP.Value.ATHRmode2 ~= DATAREF_ATHRmode2 then
         TolissCP.Timer.ATHRmode2 = M_UTILITIES.SetTimer(2)
         TolissCP.Value.ATHRmode2 = DATAREF_ATHRmode2
@@ -105,7 +107,9 @@ function TolissCP.CheckFmaVerticalMode()
         elseif DATAREF_APVerticalMode == 103 then TolissCP.Object_sound:set_isPlayed_flags("AltStar",false) 
         elseif DATAREF_APVerticalMode == 104 then TolissCP.Object_sound:set_isPlayed_flags("Alt",false) 
         elseif DATAREF_APVerticalMode == 105 then TolissCP.Object_sound:set_isPlayed_flags("AltCruise",false) 
-        elseif DATAREF_APVerticalMode == 107 then TolissCP.Object_sound:set_isPlayed_flags("VS",false) 
+        -- VERTICAL MODE 107 can be V/S or FPA
+        elseif DATAREF_APVerticalMode == 107 then 
+            TolissCP.Object_sound:set_isPlayed_flags("VS",false) 
         elseif DATAREF_APVerticalMode == 112 then TolissCP.Object_sound:set_isPlayed_flags("ExpediteClimb",false) 
         elseif DATAREF_APVerticalMode == 113 then TolissCP.Object_sound:set_isPlayed_flags("ExpediteDescent",false) 
         end 
@@ -546,7 +550,7 @@ function TolissCP.CheckAutopilotPhase_Cruize()
         DESCENTNM = DATAREF_DistToDest - TODvalue
     end
 
-    -- Display the TOP OF DESCENT against the Distance of destination
+    -- DISPLAY THE TOP OF DESCENT AGAINST THE DISTANCE OF DESTINATION
     if TolissCP.isTodCaptured then
         TolissCP.Top_of_descent_value = DATAREF_DistToDest-DESCENTNM
         CUS_distance_to_tod = TolissCP.Top_of_descent_value
@@ -573,7 +577,6 @@ function TolissCP.CheckAutopilotPhase_Descent()
     end
 
     -- REACH 10000 FEETS EVENT (DESCENT)
-    -- 9995-9999 feet are important, to do that in case a reload of a situation from the ISCS menu
     if M_UTILITIES.Round(DATAREF_altitude_ft_pilot) <= 9999 and M_UTILITIES.Round(DATAREF_altitude_ft_pilot) > 9995 and M_UTILITIES.Round(DATAREF_vvi_fpm_pilot) < 0 and not TolissCP.Object_sound:is_played("Pass10000LightsOn")  then
         TolissCP.Object_sound:insert("Pass10000LightsOn",0.5) 
     end
@@ -626,12 +629,12 @@ function TolissCP.CheckAutopilotPhase_Approach()
         TolissCP.Object_sound:insert("Blue",0.5) 
     end
 
-    -- Reversers EVENT
+    -- REVERSERS EVENT
     if DATAREF_thrust_reverser_deploy_ratio > 0.99 and not TolissCP.Object_sound:is_played("ReversersGreen") then 
         TolissCP.Object_sound:insert("ReversersGreen",0) 
     end
 
-    -- Stoping EVENT
+    -- STOPING EVENT
     if DATAREF_IASCapt < 62  and not TolissCP.Object_sound:is_played("60kts") then 
         TolissCP.Object_sound:insert("60kts",0) 
     end
@@ -742,12 +745,12 @@ function TolissCP.PrepareSoundList()
 
     local list_sounds = {}
 
-    -- 0 thru 19
+    -- 0 THRU 19
     for number=0,19 do
         table.insert(list_sounds,number)
     end
 
-    -- 20 thru 90 (scale of tens)
+    -- 20 THRU 90 (SCALE OF TENS)
     for number=20,90,10 do
         table.insert(list_sounds,number)
     end
@@ -852,26 +855,26 @@ end
 --++---------------------------------------------------------------------------------------++
 function TolissCP.SetDefaultValues()
 
-    TolissCP.WINDOWX = 150 -- Display position from right edge of window
-    TolissCP.WINDOWY = 250 -- Display position from top edge of window
+    TolissCP.WINDOWX = 150 -- DISPLAY POSITION FROM RIGHT EDGE OF WINDOW
+    TolissCP.WINDOWY = 250 -- DISPLAY POSITION FROM TOP EDGE OF WINDOW
 
     -----------
-    -- flags --
+    -- FLAGS --
     -----------
     TolissCP.isTodCaptured = false 
     TolissCP.isMissedApproachWarning = false 
     TolissCP.isAutopilotPhasePreflight = true 
 
     ----------------------------------
-    -- variable that affects events --
+    -- VARIABLE THAT AFFECTS EVENTS --
     ----------------------------------
     TolissCP.Flaps_valid = {0.00,0.25,0.50,0.75,1.00}
     TolissCP.LastFlapSet = DATAREF_FlapLeverRatio
-    TolissCP.last_fuel_total = DATAREF_m_fuel_total -- Important line. Do not delete it
+    TolissCP.last_fuel_total = DATAREF_m_fuel_total -- IMPORTANT LINE. DO NOT DELETE IT
     TolissCP.Top_of_descent_value = 0
 
     -----------------------------------
-    -- timer for a specific variable --
+    -- TIMER FOR A SPECIFIC VARIABLE --
     -----------------------------------
     TolissCP.Timer = {}
     TolissCP.Timer.THRLeverMode = 0 
@@ -886,22 +889,22 @@ function TolissCP.SetDefaultValues()
     TolissCP.Timer.gear = 0
    
     ---------------------------------------
-    -- variable value related to a timer --
+    -- VARIABLE VALUE RELATED TO A TIMER --
     ---------------------------------------
     TolissCP.Value = {}
-    TolissCP.Value.THRLeverMode = DATAREF_THRLeverMode or 0 -- column 1
-    TolissCP.Value.ATHRmode2 = DATAREF_ATHRmode2 or 0 -- column 1
-    TolissCP.Value.APVerticalMode = DATAREF_APVerticalMode or 0-- column 2
-    TolissCP.Value.APVerticalArmed = DATAREF_APVerticalArmed or 0-- column 2 line 2
-    TolissCP.Value.APLateralMode = DATAREF_APLateralMode or 0 -- column 3
-    TolissCP.Value.AP1Engage = DATAREF_AP1Engage or 0 -- column 5
-    TolissCP.Value.ATHRmode = DATAREF_ATHRmode or 0 -- column 5
+    TolissCP.Value.THRLeverMode = DATAREF_THRLeverMode or 0 
+    TolissCP.Value.ATHRmode2 = DATAREF_ATHRmode2 or 0 
+    TolissCP.Value.APVerticalMode = DATAREF_APVerticalMode or 0
+    TolissCP.Value.APVerticalArmed = DATAREF_APVerticalArmed or 0
+    TolissCP.Value.APLateralMode = DATAREF_APLateralMode or 0
+    TolissCP.Value.AP1Engage = DATAREF_AP1Engage or 0
+    TolissCP.Value.ATHRmode = DATAREF_ATHRmode or 0
     TolissCP.Value.AltitudeTargetChanged = DATAREF_ap_alt_target_value or 0
     TolissCP.Value.vertical_velocity = DATAREF_vertical_velocity or 0
     TolissCP.Value.gear = DATAREF_GearLever or 0
 
     -------------------------------------------------------------------------------
-    -- temporary message to make sure that the default is done in the right time --
+    -- TEMPORARY MESSAGE TO MAKE SURE THAT THE DEFAULT IS DONE IN THE RIGHT TIME --
     -------------------------------------------------------------------------------
     if not TolissCP.Object_sound:is_played("DefaultDone") then 
         TolissCP.Object_sound:insert("DefaultDone",2)

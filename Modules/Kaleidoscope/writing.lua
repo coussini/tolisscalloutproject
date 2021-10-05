@@ -22,108 +22,107 @@ local M_COMPONENTS = require("Kaleidoscope.components")
 --+==================================================================+
 --| They will be available when this library has loaded with require |
 --+==================================================================+
-    local M_WRITING = {}
+local M_WRITING = {}
 
-    M_WRITING.fonts_pseudo_valid = {"H10","H12","H18","T10","T24","H10B","H12B","H18B","T10B","T24B","H10E","H12E","H18E","T10E","T24E"}
+M_WRITING.fonts_pseudo_valid = {"H10","H12","H18","T10","T24","H10B","H12B","H18B","T10B","T24B","H10E","H12E","H18E","T10E","T24E"}
 
-    M_WRITING.FONTS =
+M_WRITING.FONTS =
+{
+    H10 = 
     {
-        H10 = 
-        {
-            pseudo = "H10",
-            name   = "Helvetica_10",
-            type   = "normal"
-        },
-        H12 = 
-        {
-            pseudo = "H12",
-            name   = "Helvetica_12",
-            type   = "normal"
-        },
-        H18 = 
-        {
-            pseudo = "H18",
-            name   = "Helvetica_18",
-            type   = "normal"
-        },
-        T10 = 
-        {
-            pseudo = "T10",
-            name   = "Times_Roman_10",
-            type   = "normal"
-        },
-        T24 = 
-        {
-            pseudo = "T24",
-            name   = "Times_Roman_24",
-            type   = "normal"
-        },
-        H10B = 
-        {
-            pseudo = "H10B",
-            name   = "Helvetica_10",
-            type   = "bold"
-        },
-        H12B = 
-        {
-            pseudo = "H12B",
-            name   = "Helvetica_12",
-            type   = "bold"
-        },
-        H18B = 
-        {
-            pseudo = "H18B",
-            name   = "Helvetica_18",
-            type   = "bold"
-        },
-        T10B = 
-        {
-            pseudo = "T10B",
-            name   = "Times_Roman_10",
-            type   = "bold"
-        },
-        T24B = 
-        {
-            pseudo = "T24B",
-            name   = "Times_Roman_24",
-            type   = "bold"
-        },
-        H10E = 
-        {
-            pseudo = "H10E",
-            name   = "Helvetica_10",
-            type   = "emboss"
-        },
+        pseudo = "H10",
+        name   = "Helvetica_10",
+        type   = "normal"
+    },
+    H12 = 
+    {
+        pseudo = "H12",
+        name   = "Helvetica_12",
+        type   = "normal"
+    },
+    H18 = 
+    {
+        pseudo = "H18",
+        name   = "Helvetica_18",
+        type   = "normal"
+    },
+    T10 = 
+    {
+        pseudo = "T10",
+        name   = "Times_Roman_10",
+        type   = "normal"
+    },
+    T24 = 
+    {
+        pseudo = "T24",
+        name   = "Times_Roman_24",
+        type   = "normal"
+    },
+    H10B = 
+    {
+        pseudo = "H10B",
+        name   = "Helvetica_10",
+        type   = "bold"
+    },
+    H12B = 
+    {
+        pseudo = "H12B",
+        name   = "Helvetica_12",
+        type   = "bold"
+    },
+    H18B = 
+    {
+        pseudo = "H18B",
+        name   = "Helvetica_18",
+        type   = "bold"
+    },
+    T10B = 
+    {
+        pseudo = "T10B",
+        name   = "Times_Roman_10",
+        type   = "bold"
+    },
+    T24B = 
+    {
+        pseudo = "T24B",
+        name   = "Times_Roman_24",
+        type   = "bold"
+    },
+    H10E = 
+    {
+        pseudo = "H10E",
+        name   = "Helvetica_10",
+        type   = "emboss"
+    },
 
-        H12E = 
-        {
-            pseudo = "H12E",
-            name   = "Helvetica_12",
-            type   = "emboss"
-        },
+    H12E = 
+    {
+        pseudo = "H12E",
+        name   = "Helvetica_12",
+        type   = "emboss"
+    },
 
-        H18E = 
-        {
-            pseudo = "H18E",
-            name   = "Helvetica_18",
-            type   = "emboss"
-        },
+    H18E = 
+    {
+        pseudo = "H18E",
+        name   = "Helvetica_18",
+        type   = "emboss"
+    },
 
-        T10E = 
-        {
-            pseudo = "T10E",
-            name   = "Times_Roman_10",
-            type   = "emboss"
-        },
+    T10E = 
+    {
+        pseudo = "T10E",
+        name   = "Times_Roman_10",
+        type   = "emboss"
+    },
 
-        T24E = 
-        {
-            pseudo = "T24E",
-            name   = "Times_Roman_24",
-            type   = "emboss"
-        }
+    T24E = 
+    {
+        pseudo = "T24E",
+        name   = "Times_Roman_24",
+        type   = "emboss"
     }
-
+}
 
 --+==============================================================+
 --|    T H E   F O L L O W I N G   A R E   L O W   L E V E L     |

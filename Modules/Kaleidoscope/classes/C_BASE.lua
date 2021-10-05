@@ -26,20 +26,20 @@ local M_COMPONENTS = require("Kaleidoscope.components")
 -- ATTRIBUTES FOR THE BASE CLASS --
 -----------------------------------
 local C_BASE = {
-    type = "", -- drawing or writing
+    type = "", -- DRAWING OR WRITING
     ----------------
-    -- Properties --
+    -- PROPERTIES --
     ----------------
     parent_coordinates = {},
     horizontal_type = "",
     horizontal_value = 0,
     vertical_type = "",
     vertical_value = 0,
-    properties = {}, -- object for calling routine
+    properties = {}, -- OBJECT FOR CALLING ROUTINE
     ------------
-    -- Result --
+    -- RESULT --
     ------------
-    coordinates = {}  -- object for calling routine (will be a parent_coordinates)    
+    coordinates = {}  -- OBJECT FOR CALLING ROUTINE (WILL BE A PARENT_COORDINATES)
 }
 
 ------------------------------------

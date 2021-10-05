@@ -21,11 +21,11 @@ local M_COMPONENTS = require("Kaleidoscope.components")
 --+==================================================================+
 --| They will be available when this library has loaded with require |
 --+==================================================================+
-    local M_DRAWING = {}
+local M_DRAWING = {}
 
-    -- The TOP_BOTTOM_CORNER_HEIGHT change the apparence of the round corner
-    -- Can be change using M_DRAWING.SetTopBottomCornerHeight()
-    M_DRAWING.TOP_BOTTOM_CORNER_HEIGHT = 10
+-- THE TOP_BOTTOM_CORNER_HEIGHT CHANGE THE APPARENCE OF THE ROUND CORNER
+-- CAN BE CHANGE USING M_DRAWING.SETTOPBOTTOMCORNERHEIGHT()
+M_DRAWING.TOP_BOTTOM_CORNER_HEIGHT = 10
 
 --+==============================================================+
 --|    T H E   F O L L O W I N G   A R E   L O W   L E V E L     |
