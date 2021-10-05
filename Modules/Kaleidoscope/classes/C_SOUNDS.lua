@@ -14,6 +14,9 @@ Kaleidoscope C_SOUNDS class By Coussini 2021
 --|  R E Q U I R E D   L I B R A R I E S   |
 --+========================================+
 local M_UTILITIES = require("Kaleidoscope.utilities")
+ 
+-- dataref required for C_SOUNDS class
+DataRef("C_SOUNDS_total_running_time_sec","sim/time/total_running_time_sec","readonly")
 
 --+======================================================================+
 --|                    T H E   F O L L O W I N G   I S                   |
@@ -170,7 +173,7 @@ function C_SOUNDS:play_the_first(index)
     local sound_name = self.sounds_queue[1].name
     play_sound(self.sounds_informations[sound_name].source_pointer)
     self.sounds_queue[1].stop_at = M_UTILITIES.SetTimer(self.sounds_informations[sound_name].duration)
-    M_UTILITIES.OutputLog("play_the_first : "..sound_name.." stop At "..self.sounds_queue[1].stop_at.." current "..REF_total_running_time_sec)
+    M_UTILITIES.OutputLog("play_the_first : "..sound_name.." stop At "..self.sounds_queue[1].stop_at.." current "..C_SOUNDS_total_running_time_sec)
 end -- function PlayASond(index)
 
 --++-------------------------------------------------------------------------------------------------------------++
@@ -183,7 +186,7 @@ function C_SOUNDS:process_sounds_queue()
         if self.sounds_queue[1].stop_at == nil then
             C_SOUNDS:play_the_first()
         else
-            if self.sounds_queue[1].stop_at < REF_total_running_time_sec then
+            if self.sounds_queue[1].stop_at < C_SOUNDS_total_running_time_sec then
                 -- delete the current sound that has finish to play
                 table.remove(self.sounds_queue, 1)
             end
