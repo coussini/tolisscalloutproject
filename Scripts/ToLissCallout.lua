@@ -138,7 +138,6 @@ function TolissCP.CheckFmaVerticalMode()
         elseif DATAREF_APVerticalMode == 104 then 
             if DATAREF_altitude_ft_pilot + 400 > DATAREF_cruise_alt then -- patch because ALT appear just before ALT CRZ
             else 
-                -- toliss_airbus/init/cruise_alt
                 TolissCP.Object_sound:reset_and_insert("Alt",0.5) 
             end 
         elseif DATAREF_APVerticalMode == 105 then TolissCP.Object_sound:reset_and_insert("AltCruise",0.5) -- alt play before alt cruise so... only cruise 
