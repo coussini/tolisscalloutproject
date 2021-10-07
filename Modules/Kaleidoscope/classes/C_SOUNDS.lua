@@ -194,4 +194,12 @@ function C_SOUNDS:process_sounds_queue()
     end
 end 
 
+--++-------------------------------------------------------------------------------------------------------------++
+--|| C_SOUNDS:play_the_first() Play the first sound in the queue, then set the get the duration for the time out || 
+--++-------------------------------------------------------------------------------------------------------------++
+function C_SOUNDS:reset_and_insert(sound_name,extra_gap)
+    C_SOUNDS:set_isPlayed_flags(sound_name,false)
+    C_SOUNDS:insert(sound_name,extra_gap)
+end 
+
 return C_SOUNDS
