@@ -45,7 +45,7 @@ local C_SOUNDS = {
 --    The sounds_queue contains these folowing element:
 --    name = "", -- the sound name as reference (for to tostring for any number)
 --    stop_at = 0, -- when the sound will be playing (time out)
---    treated = false -- a treated status to know if a sound sources was played
+--    extra_gap = 0 -- An extra gap to add to the stop_at value
 
 --------------------------------------
 -- CONSTRUCTOR FOR THE SOUNDS CLASS --
@@ -128,13 +128,13 @@ end
 --++--------------------------------------------------------++
 function C_SOUNDS:insert(sound_name,extra_gap)
 
+    local var_extra_gap = extra_gap or 0
     sound_name = tostring(sound_name)
     self.sounds_informations[sound_name].isPlayed = true  
-    M_UTILITIES.OutputLog("insert ... pas de bug")
     self.sounds_queue_elements = {
         name = sound_name,
         stop_at = nil,
-        treated = false
+        extra_gap = var_extra_gap
     }
 
     table.insert(self.sounds_queue,self.sounds_queue_elements) -- add this element to the end of sounds_queue
@@ -152,7 +152,7 @@ function C_SOUNDS:insert_number(number,extra_gap)
     _,nb_of_words = str:gsub("%S+","")
     for word in str:gmatch("%S+") do
         i = i + 1
-        if i == nb_of_words then extra_gap = 0.5 end -- add a gap
+        if i == nb_of_words then extra_gap = 0 end -- add a gap
         M_UTILITIES.OutputLog("insert A number as Sound In Sound Queue : "..word)
         C_SOUNDS:insert(word,extra_gap)
     end
@@ -171,8 +171,9 @@ end
 --++-------------------------------------------------------------------------------------------------------------++
 function C_SOUNDS:play_the_first(index)
     local sound_name = self.sounds_queue[1].name
+    local extra_gap = self.sounds_queue[1].extra_gap
     play_sound(self.sounds_informations[sound_name].source_pointer)
-    self.sounds_queue[1].stop_at = M_UTILITIES.SetTimer(self.sounds_informations[sound_name].duration)
+    self.sounds_queue[1].stop_at = M_UTILITIES.SetTimer(self.sounds_informations[sound_name].duration) + extra_gap
     M_UTILITIES.OutputLog("play_the_first : "..sound_name.." stop At "..self.sounds_queue[1].stop_at.." current "..C_SOUNDS_total_running_time_sec)
 end 
 
