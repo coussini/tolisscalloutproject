@@ -101,8 +101,11 @@ function TolissCP.CheckFmaThrustMode()
         elseif DATAREF_APLateralMode == 12 then TolissCP.Object_sound:reset_and_insert("GATRK",0.5) 
         end 
         -- auto flight status
-        if     DATAREF_ATHRmode == 1 then TolissCP.Object_sound:reset_and_insert("ATHRBlue",0,5) 
-        elseif DATAREF_ATHRmode == 2 then TolissCP.Object_sound:reset_and_insert("ATHR",0,5) 
+        if     TolissCP.Value.ATHRmode ~= DATAREF_ATHRmode then 
+            TolissCP.Value.ATHRmode = DATAREF_ATHRmode 
+            if     DATAREF_ATHRmode == 1 then TolissCP.Object_sound:reset_and_insert("ATHRBlue",0,5) 
+            elseif DATAREF_ATHRmode == 2 then TolissCP.Object_sound:reset_and_insert("ATHR",0,5) 
+            end 
         end 
     end
 
@@ -132,7 +135,9 @@ function TolissCP.CheckFmaVerticalMode()
         elseif DATAREF_APVerticalMode == 11 then TolissCP.Object_sound:reset_and_insert("LandGreen",0.5) 
         elseif DATAREF_APVerticalMode == 101 then TolissCP.Object_sound:reset_and_insert("OpenClimb",0.5)
         elseif DATAREF_APVerticalMode == 103 then TolissCP.Object_sound:reset_and_insert("AltStar",0.5) 
-        elseif DATAREF_APVerticalMode == 104 then TolissCP.Object_sound:reset_and_insert("Alt",0.5) 
+        elseif DATAREF_APVerticalMode == 104 then 
+            XPLMSpeakString("ici")
+            TolissCP.Object_sound:reset_and_insert("Alt",0.5) 
         elseif DATAREF_APVerticalMode == 105 then TolissCP.Object_sound:reset_and_insert("AltCruise",0.5) 
         -- VERTICAL MODE 107 can be V/S or FPA
         elseif DATAREF_APVerticalMode == 107 then TolissCP.Object_sound:reset_and_insert("VS",false) 
@@ -872,31 +877,31 @@ function TolissCP.SetDefaultValues()
     -- TIMER FOR A SPECIFIC VARIABLE --
     -----------------------------------
     TolissCP.Timer = {}
-    TolissCP.Timer.ThrustMode = 0 
-    TolissCP.Timer.APVerticalMode = 0
-    TolissCP.Timer.APVerticalArmed = 0
-    TolissCP.Timer.APLateralMode = 0
-    TolissCP.Timer.AP1Engage = 0
-    TolissCP.Timer.ATHRmode = 0
     TolissCP.Timer.AltitudeTargetChanged = 0
-    TolissCP.Timer.vertical_velocity = 0
+    TolissCP.Timer.AP1Engage = 0
+    TolissCP.Timer.APLateralMode = 0
+    TolissCP.Timer.APVerticalArmed = 0
+    TolissCP.Timer.APVerticalMode = 0
+    TolissCP.Timer.ATHRmode = 0
     TolissCP.Timer.gear = 0
+    TolissCP.Timer.ThrustMode = 0 
+    TolissCP.Timer.vertical_velocity = 0
    
     ---------------------------------------
     -- VARIABLE VALUE RELATED TO A TIMER --
     ---------------------------------------
     TolissCP.Value = {}
-    TolissCP.Value.THRLeverMode = DATAREF_THRLeverMode or 0 -- THRUST MODE ARMED
-    TolissCP.Value.athr_thrust_mode = DATAREF_athr_thrust_mode or 0 -- THRUST MODE ENGAGED
-    TolissCP.Value.ATHRmode2 = DATAREF_ATHRmode2 or 0 -- SPECIAL MODE WHEN THRUST MODE ENGAGED (mach or speed)
-    TolissCP.Value.APVerticalMode = DATAREF_APVerticalMode or 0
-    TolissCP.Value.APVerticalArmed = DATAREF_APVerticalArmed or 0
-    TolissCP.Value.APLateralMode = DATAREF_APLateralMode or 0
-    TolissCP.Value.AP1Engage = DATAREF_AP1Engage or 0
-    TolissCP.Value.ATHRmode = DATAREF_ATHRmode or 0
     TolissCP.Value.AltitudeTargetChanged = DATAREF_ap_alt_target_value or 0
-    TolissCP.Value.vertical_velocity = DATAREF_vertical_velocity or 0
+    TolissCP.Value.AP1Engage = DATAREF_AP1Engage or 0
+    TolissCP.Value.APLateralMode = DATAREF_APLateralMode or 0
+    TolissCP.Value.APVerticalArmed = DATAREF_APVerticalArmed or 0
+    TolissCP.Value.APVerticalMode = DATAREF_APVerticalMode or 0
+    TolissCP.Value.athr_thrust_mode = DATAREF_athr_thrust_mode or 0 -- THRUST MODE ENGAGED
+    TolissCP.Value.ATHRmode = DATAREF_ATHRmode or 0
+    TolissCP.Value.ATHRmode2 = DATAREF_ATHRmode2 or 0 -- SPECIAL MODE WHEN THRUST MODE ENGAGED (mach or speed)
     TolissCP.Value.gear = DATAREF_GearLever or 0
+    TolissCP.Value.THRLeverMode = DATAREF_THRLeverMode or 0 -- THRUST MODE ARMED
+    TolissCP.Value.vertical_velocity = DATAREF_vertical_velocity or 0
 
     -------------------------------------------------------------------------------
     -- TEMPORARY MESSAGE TO MAKE SURE THAT THE DEFAULT IS DONE IN THE RIGHT TIME --
