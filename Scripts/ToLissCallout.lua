@@ -440,6 +440,21 @@ end
 
 function TolissCP.CheckAutopilotPhase_Cruize()
 
+    if DATAREF_MCDU1cont3g ~= "" or DATAREF_MCDU1cont3g ~= nil then 
+        TolissCP.DESCENTNM = tonumber(TolissCP.CatchTODTime(DATAREF_MCDU1cont3g))
+    end
+
+    if tonumber(TolissCP.CatchTODTime(DATAREF_MCDU1cont3g)) == 100 or tonumber(TolissCP.CatchTODTime(DATAREF_MCDU1cont3g)) == 75 then 
+        command_once("AirbusFBW/MCDU1Perf")
+        TolissCP.Object_sound:insert("TopOfDescentValueCaptured",2) 
+        TODvalue = TolissCP.CatchTODTime(DATAREF_MCDU1cont3g)
+        DESCENTNM = DATAREF_DistToDest - TODvalue
+    end
+
+    if TolissCP.isReachCruise and not TolissCP.isTodCaptured then
+        command_once("AirbusFBW/MCDU1Perf")
+    end
+
     -- CAPTURE TOP OF DESCENT
     if TolissCP.isReachCruise and string.find(DATAREF_MCDU1cont2g,"(T/D)") ~= nil and not TolissCP.isTodCaptured then
         TolissCP.Object_sound:insert("TopOfDescentValueCaptured",2) 
@@ -863,12 +878,13 @@ function TolissCP_DisplayValuesPanel()
         
     glColor4f(M_COLORS.YELLOW.red, M_COLORS.YELLOW.green, M_COLORS.YELLOW.blue, 1)
     
+    --[[
     draw_string_Times_Roman_24(800, 900, "PHASE              = "..DATAREF_APPhase or "")
     draw_string_Times_Roman_24(800, 870, "APVerticalMode     = "..DATAREF_APVerticalMode or "")
     draw_string_Times_Roman_24(800, 840, "APVerticalMode arm = "..DATAREF_APVerticalArmed or "")
     draw_string_Times_Roman_24(800, 810, "APLateralMode      = "..DATAREF_APLateralMode or "")
     draw_string_Times_Roman_24(800, 770, "Timer Thrust.      = "..TolissCP.Timer.ThrustEngagedMode)
-    
+    ]]
     -- DRAW THE PARAMETERS VALUES
     graphics.set_color(1, 1, 1, 0.8)
 
