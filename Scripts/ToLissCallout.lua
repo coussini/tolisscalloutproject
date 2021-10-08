@@ -38,17 +38,17 @@ function TolissCP.CatchTODTime(str)
 
 end
 
---++---------------------------------------------------------------++
---|| TolissCP.CheckFmaThrustMode() check the FMA thrust lever mode || 
---++---------------------------------------------------------------++
-function TolissCP.CheckFmaThrustMode()
+--++----------------------------------------------------------------------++
+--|| TolissCP.CheckFmaThrustEngagedMode() check the FMA thrust lever mode || 
+--++----------------------------------------------------------------------++
+function TolissCP.CheckFmaThrustEngagedMode()
 
     ----------------------------------------
     -- MODE THAT THE AUTO THRUST IS ARMED --
     ----------------------------------------
     if TolissCP.Value.THRLeverMode ~= DATAREF_THRLeverMode then
         TolissCP.Value.THRLeverMode = DATAREF_THRLeverMode
-        TolissCP.Timer.ThrustMode = M_UTILITIES.SetTimer(2) -- waiting for the thrust lever to stay is in right position 
+        TolissCP.Timer.ThrustEngagedMode = M_UTILITIES.SetTimer(2) -- waiting for the thrust lever to stay is in right position 
     end
 
     ------------------------------------------
@@ -57,12 +57,15 @@ function TolissCP.CheckFmaThrustMode()
     if TolissCP.Value.athr_thrust_mode ~= DATAREF_athr_thrust_mode then
         TolissCP.Value.athr_thrust_mode = DATAREF_athr_thrust_mode
         if     DATAREF_athr_thrust_mode ~= 0 then 
-            TolissCP.Timer.ThrustMode = M_UTILITIES.SetTimer(2) -- waiting for the thrust lever to stay is in right position
+            TolissCP.Timer.ThrustEngagedMode = M_UTILITIES.SetTimer(2) -- waiting for the thrust lever to stay is in right position
         end 
     end
 
-    if TolissCP.Timer.ThrustMode ~= 0 and DATAREF_total_running_time_sec > TolissCP.Timer.ThrustMode then
-        TolissCP.Timer.ThrustMode = 0
+    --------------------------------------------------------------------
+    -- CHECK THE RELETED COLUMN 1 THRU 5 AGAINST THE THRUST SITUATION --
+    --------------------------------------------------------------------
+    if TolissCP.Timer.ThrustEngagedMode ~= 0 and DATAREF_total_running_time_sec > TolissCP.Timer.ThrustEngagedMode then
+        TolissCP.Timer.ThrustEngagedMode = 0
         if     DATAREF_THRLeverMode == 1 then TolissCP.Object_sound:reset_and_insert("ManThrust",0) 
         elseif DATAREF_THRLeverMode == 2 then TolissCP.Object_sound:reset_and_insert("ManFlex",0) 
         elseif DATAREF_THRLeverMode == 3 then TolissCP.Object_sound:reset_and_insert("ManTOGA",0) 
@@ -89,7 +92,7 @@ function TolissCP.CheckFmaThrustMode()
         elseif DATAREF_APLateralMode == 1 then TolissCP.Object_sound:reset_and_insert("RWYTRK",0) 
         elseif DATAREF_APLateralMode == 12 then TolissCP.Object_sound:reset_and_insert("GATRK",0) 
         end 
-        -- auto flight status
+        -- auto pilot, flight director and auto thrust status
         if     TolissCP.Value.ATHRmode ~= DATAREF_ATHRmode then 
             TolissCP.Value.ATHRmode = DATAREF_ATHRmode 
             if     DATAREF_ATHRmode == 1 then TolissCP.Object_sound:reset_and_insert("ATHRBlue",0) 
@@ -98,6 +101,9 @@ function TolissCP.CheckFmaThrustMode()
         end 
     end
 
+    ------------------------------------------
+    -- CHECK THE SPEED OR MACH ANNUNCIATION --
+    ------------------------------------------
     if TolissCP.Value.ATHRmode2 ~= DATAREF_ATHRmode2 then
         TolissCP.Value.ATHRmode2 = DATAREF_ATHRmode2
         if     DATAREF_ATHRmode2 == 4 then TolissCP.Object_sound:reset_and_insert("Speed",0) 
@@ -107,10 +113,10 @@ function TolissCP.CheckFmaThrustMode()
 
 end
 
---++-------------------------------------------------------------++
---|| TolissCP.CheckFmaVerticalMode() check the FMA vertical mode || 
---++-------------------------------------------------------------++
-function TolissCP.CheckFmaVerticalMode()
+--++--------------------------------------------------------------------++
+--|| TolissCP.CheckFmaVerticalEngagedMode() check the FMA vertical mode || 
+--++--------------------------------------------------------------------++
+function TolissCP.CheckFmaVerticalEngagedMode()
 
     if TolissCP.Value.APVerticalMode ~= DATAREF_APVerticalMode then
         TolissCP.Value.APVerticalMode = DATAREF_APVerticalMode
@@ -149,8 +155,8 @@ function TolissCP.CheckFmaVerticalMode()
     end
 
     --[[
-    if TolissCP.Timer.APVerticalMode ~= 0 and DATAREF_total_running_time_sec > TolissCP.Timer.APVerticalMode then
-        TolissCP.Timer.APVerticalMode = 0
+    if TolissCP.Timer.VerticalEngagedMode ~= 0 and DATAREF_total_running_time_sec > TolissCP.Timer.VerticalEngagedMode then
+        TolissCP.Timer.VerticalEngagedMode = 0
         if     DATAREF_APVerticalMode == 0 and not TolissCP.Object_sound:is_played("SRS") then TolissCP.Object_sound:insert("SRS",0.5) 
         elseif DATAREF_APVerticalMode == 1 and not TolissCP.Object_sound:is_played("Climb") then TolissCP.Object_sound:insert("Climb",0.5) 
         elseif DATAREF_APVerticalMode == 2 and not TolissCP.Object_sound:is_played("Des") then TolissCP.Object_sound:insert("Des",0.5) 
@@ -221,10 +227,10 @@ function TolissCP.CheckFmaVerticalMode()
     ]]
 end
 
---++-----------------------------------------------------------++
---|| TolissCP.CheckFmaLateralMode() check the FMA lateral mode || 
---++-----------------------------------------------------------++
-function TolissCP.CheckFmaLateralMode()
+--++------------------------------------------------------------------++
+--|| TolissCP.CheckFmaLateralEngagedMode() check the FMA lateral mode || 
+--++------------------------------------------------------------------++
+function TolissCP.CheckFmaLateralEngagedMode()
 
     if TolissCP.Value.APLateralMode ~= DATAREF_APLateralMode then
         TolissCP.Value.APLateralMode = DATAREF_APLateralMode
@@ -242,15 +248,10 @@ function TolissCP.CheckFmaLateralMode()
 
 end
 
-function TolissCP.CheckFmaAutoFlightStatus()
-
---[[
-ATHRmode = {}
-ATHRmode[0] = "disengaged"
-ATHRmode[1] = "Auto Thrust Blue"
-ATHRmode[2] = "Auto Thrust"
-
-]]
+--++-------------------------------------------------------------------------------------------------------------------------++
+--|| TolissCP.CheckFmaStatusAndSpecialMessagesEngagedMode() check the FMA Auto pilot, flight director and auto thrust status || 
+--++-------------------------------------------------------------------------------------------------------------------------++
+function TolissCP.CheckFmaStatusAndSpecialMessagesEngagedMode()
 
     if TolissCP.Value.AP1Engage ~= DATAREF_AP1Engage then
         TolissCP.Value.AP1Engage = DATAREF_AP1Engage
@@ -268,7 +269,10 @@ ATHRmode[2] = "Auto Thrust"
 
 end
 
-function TolissCP.CheckFmaVerticalModeArmed()
+--++------------------------------------------------------------------------++
+--|| TolissCP.CheckFmaVerticalArmedMode() check the FMA vertical armed mode || 
+--++------------------------------------------------------------------------++
+function TolissCP.CheckFmaVerticalArmedMode()
 
 
     --[[
@@ -284,30 +288,16 @@ APVerticalArmed[10] = "OP CLB armed"
 
     if TolissCP.Value.APVerticalArmed ~= DATAREF_APVerticalArmed then
         TolissCP.Value.APVerticalArmed = DATAREF_APVerticalArmed
-        TolissCP.Timer.APVerticalArmed = M_UTILITIES.SetTimer(2) -- waiting for the alt button to stay is in right position
+        TolissCP.Timer.VerticalArmedMode = M_UTILITIES.SetTimer(2) -- waiting for the alt button to stay is in right position
     end
 
     if TolissCP.Value.AltitudeTargetChanged ~= DATAREF_ap_alt_target_value then
         TolissCP.Value.AltitudeTargetChanged = DATAREF_ap_alt_target_value
-        TolissCP.Timer.APVerticalArmed = M_UTILITIES.SetTimer(2) -- waiting for the alt button to stay is in right position
+        TolissCP.Timer.VerticalArmedMode = M_UTILITIES.SetTimer(2) -- waiting for the alt button to stay is in right position
     end
 
-    --[[
-    if TolissCP.Timer.APVerticalArmed ~= 0 and DATAREF_total_running_time_sec > TolissCP.Timer.APVerticalArmed then
-        TolissCP.Timer.APVerticalArmed = 0
-        if     DATAREF_APVerticalArmed == 6 and not TolissCP.Object_sound:set_isPlayed_flags("Alt"] then 
-            TolissCP.Object_sound:insert("Alt",0.5) 
-            TolissCP.Object_sound:insert_number(DATAREF_ap_alt_target_value,0.5) 
-            TolissCP.Object_sound:insert("Blue",0.5) 
-        elseif DATAREF_APVerticalArmed == 8 and not TolissCP.Object_sound:set_isPlayed_flags("Alt"] then 
-            TolissCP.Object_sound:insert("Alt",0.5) 
-            TolissCP.Object_sound:insert_number(DATAREF_ConstraintAlt,0.5) 
-            TolissCP.Object_sound:insert("Magenta",0.5) 
-        end 
-    end
-    ]]
-    if TolissCP.Timer.APVerticalArmed ~= 0 and DATAREF_total_running_time_sec > TolissCP.Timer.APVerticalArmed then
-        TolissCP.Timer.APVerticalArmed = 0
+    if TolissCP.Timer.VerticalArmedMode ~= 0 and DATAREF_total_running_time_sec > TolissCP.Timer.VerticalArmedMode then
+        TolissCP.Timer.VerticalArmedMode = 0
         if     DATAREF_APVerticalArmed == 6 then 
             TolissCP.Object_sound:reset_and_insert("Alt",0.5) 
             TolissCP.Object_sound:reset_and_insert("FlightLevel",0) 
@@ -351,7 +341,6 @@ function TolissCP.CheckFlapsAndGear()
         TolissCP.Value.gear = DATAREF_GearLever
     end
 
-    -- POSITIVE CLIMB EVENT  
     if not TolissCP.Object_sound:is_played("PositiveClimb") then 
         if (M_UTILITIES.Round(DATAREF_vvi_fpm_pilot) > 500 and DATAREF_APPhase == 1) or  
            M_UTILITIES.Round(DATAREF_vvi_fpm_pilot) > 500 and DATAREF_APPhase == 6 then 
@@ -372,81 +361,29 @@ end
 
 function TolissCP.CheckFlightModeAnnunciationsColumns()
 
-    TolissCP.CheckFmaThrustMode()  
+    TolissCP.CheckFmaThrustEngagedMode()  
 
-    if TolissCP.Timer.ThrustMode == 0 then
-        TolissCP.CheckFmaVerticalMode()
-        TolissCP.CheckFmaLateralMode()
-        TolissCP.CheckFmaAutoFlightStatus()   
-        TolissCP.CheckFmaVerticalModeArmed()
+    if TolissCP.Timer.ThrustEngagedMode == 0 then
+        TolissCP.CheckFmaVerticalEngagedMode()
+        TolissCP.CheckFmaLateralEngagedMode()
+        TolissCP.CheckFmaStatusAndSpecialMessagesEngagedMode()   
+        TolissCP.CheckFmaVerticalArmedMode()
     end         
 
 end
 
 function TolissCP.CheckAutopilotPhasePreflight()
-    -- ESSAYER POUR VOIR UN RELOAD DE SITUATION SANS REFRESH POUR VOIR SI LES SONS SONT EFFECTUÉS.
-    -- ESSAYER POUR VOIR UN RELOAD DE SITUATION SANS REFRESH POUR VOIR SI LES SONS SONT EFFECTUÉS.
-    -- ESSAYER POUR VOIR UN RELOAD DE SITUATION SANS REFRESH POUR VOIR SI LES SONS SONT EFFECTUÉS.
-    -- ESSAYER POUR VOIR UN RELOAD DE SITUATION SANS REFRESH POUR VOIR SI LES SONS SONT EFFECTUÉS.
 
-    if not TolissCP.isAutopilotPhasePreflight then
+    if not TolissCP.isAutopilotPhasePreflightDone then
         TolissCP.Object_sound:reset_isPlayed_flags_to_false(TolissCP.list_sounds)
         TolissCP.SetDefaultValues()
-        TolissCP.isAutopilotPhasePreflight = true
+        TolissCP.isAutopilotPhasePreflightDone = true
     end
 
 end
 
 function TolissCP.CheckAutopilotPhase_TakeOff()
 
-
-    --[1] AirbusFBW/THRLeverMode
-    -- 0: None; 1: MAN THR, 2: MAN FLX, 3: MAN TOGA, 4: MAN MCT"
-    -- [2] AirbusFBW/APVerticalMode 
-    -- 0=SRS, 1=CLB, 2=DES, 3=ALT CST*, 4=ALT CST, 6=G/S*, 7=G/S, 8=FINAL, 10=FLARE, 11=LAND; 101=OP CLB, 
-    -- 102=OP DES, 103=ALT*, 104=ALT, 105: ALT CRZ, 107=V/S or FPA, 112: EXP CLB, 113: EXP DES"
-    -- [3] AirbusFBW/APLateralMode
-    -- 0=RWY, 1=RWYTRK, 2=NAV, 6=LOC*, 7=LOC, 9=APP NAV, 10=ROLL OUT, 11=LAND, 12 GA TRK, 101=HDG or TRK" 
-
-    -- AirbusFBW/ATHRmode
-    --0: disengaged, 1: armed (auto thrust blue), 2: engaged/active
-    --AirbusFBW/athr_thrust_mode
-    --0: MCT Thrust, 1=Climb Thrust, 2=Idle thrust, 3=Flare (idle), 4: Speed, 5: Mach"
-
-    --[[
-    if string.find(DATAREF_FMA1w,"%sMAN%s") ~= nil  and string.find(DATAREF_FMA1g,"%SRS%s") ~= nil then
-        -- TOGA EVENT
-        if string.find(DATAREF_FMA2w,"%sTOGA%s") ~= nil then
-            if string.find(DATAREF_FMA1g,"%RWY%s") == nil then
-                if not TolissCP.Object_sound:set_isPlayed_flags("ManTogaSRSATHR"] then
-                    TolissCP.Object_sound:insert("ManTogaSRSATHR",0)
-                end
-            else
-                if not TolissCP.Object_sound:set_isPlayed_flags("ManTogaSRSRWYATHR"] then
-                    TolissCP.Object_sound:insert("ManTogaSRSRWYATHR",0)
-                    TolissCP.Object_sound:set_isPlayed_flags("ManTogaSRSATHR"] = true
-                end
-            end
-        -- FLEX EVENT
-        elseif string.find(DATAREF_FMA2w,"FLX%s") ~= nil  then 
-            if string.find(DATAREF_FMA1g,"%RWY%s") == nil then 
-                if not TolissCP.Object_sound:set_isPlayed_flags("ManFlexSRSATHR"] then
-                    TolissCP.Object_sound:insert("ManFlexSRSATHR",0)
-                end
-            else
-                if not TolissCP.Object_sound:set_isPlayed_flags("ManFlexSRSRWYATHR"] then
-                    TolissCP.Object_sound:insert("ManFlexSRSRWYATHR",0)
-                    TolissCP.Object_sound:set_isPlayed_flags("ManFlexSRSATHR"] = true
-                end
-                if string.find(DATAREF_FMA1g,"%TRK%s") and not TolissCP.Object_sound:set_isPlayed_flags("RWYTRK"] then
-                    TolissCP.Object_sound:insert("RWYTRK",0)
-                end
-            end
-        end
-    end
-     ]]
-
-    -- TAKE-OFF SPEEDS EVENT        
     if DATAREF_IASCapt > 78 and DATAREF_IASCapt < 95 and not TolissCP.Object_sound:is_played("ThrustSet") then 
         TolissCP.Object_sound:insert("ThrustSet",0) 
     end
@@ -467,36 +404,9 @@ function TolissCP.CheckAutopilotPhase_TakeOff()
         TolissCP.Object_sound:insert("V2",0) 
     end
 
-    -- after takeoff
-    --MAN FLEX | STR | RWY TRK | AutoThrust blue
-
 end
 
 function TolissCP.CheckAutopilotPhase_Climb()
-
-    -- THR CLB SET AFTER LVR CLB FLASHING
-    -- 3000 feet is the max value according to a real pilot of Airbus for the Thrust reduction takeoff, in feet. That's important
-    -- to do that in case a reload of a situation from the ISCS menu
-
-  --THR CLB | OP CLB | RWY TRK | AutoThrust blue (A HDG IS SET)
-  --THR CLB | OP CLB | NAV | (HDG AUTO...DOT)
-
-    --[[
-    if TolissCP.Value.athr_thrust_mode ~= DATAREF_athr_thrust_mode and DATAREF_athr_thrust_mode == 1 then
-        TolissCP.Timer.athr_thrust_mode = M_UTILITIES.SetTimer(2)
-        TolissCP.Value.athr_thrust_mode = DATAREF_athr_thrust_mode
-        TolissCP.Object_sound:set_isPlayed_flags("ThrustClimb",false) 
-        TolissCP.Object_sound:set_isPlayed_flags("Climb",false)
-    end
-
-    if TolissCP.Timer.athr_thrust_mode ~= 0  and DATAREF_athr_thrust_mode == 1 and DATAREF_total_running_time_sec > TolissCP.Timer.athr_thrust_mode then
-        TolissCP.Timer.athr_thrust_mode = 0
-        if DATAREF_athr_thrust_mode == 1 and not TolissCP.Object_sound:is_played("ThrustClimb") then TolissCP.Object_sound:insert("ThrustClimb",0.5) end
-        if DATAREF_APVerticalMode == 1 and not TolissCP.Object_sound:is_played("Climb") then TolissCP.Object_sound:insert("Climb",0.5) end 
-    end
-    ]]
-    -- REACH 10000 FEETS EVENT (CLIMB)
-    -- 9999-10005 feet are important, to do that in case a reload of a situation from the ISCS menu
 
     if DATAREF_VGreenDot_value > 0 and  M_UTILITIES.Round(DATAREF_IASCapt) > DATAREF_VGreenDot_value  and M_UTILITIES.Round(DATAREF_IASCapt) < (DATAREF_VGreenDot_value + 5) and not TolissCP.Object_sound:is_played("DownToTheLine")  then
         TolissCP.Object_sound:insert("DownToTheLine",0) 
@@ -529,12 +439,10 @@ function TolissCP.CheckAutopilotPhase_Cruize()
         CUS_distance_to_tod = TolissCP.Top_of_descent_value
     end
 
-    -- REACH 180 NM BEFORE DESTINATION, FEED APPROACH DATA TO PERFORMANCE PAGE
     if M_UTILITIES.Round(DATAREF_DistToDest) <= 180 and not TolissCP.Object_sound:is_played("Pass180NM") then 
         TolissCP.Object_sound:insert("Pass180NM",1) 
     end
 
-    -- REACH 180 NM BEFORE DESTINATION, FEED APPROACH DATA TO PERFORMANCE PAGE
     if TolissCP.Top_of_descent_value <= 10 and not TolissCP.Object_sound:is_played("Pass10NM") and TolissCP.isTodCaptured then 
         TolissCP.Object_sound:insert("Pass10NM",0) 
     end    
@@ -543,13 +451,11 @@ end
 
 function TolissCP.CheckAutopilotPhase_Descent()
 
-    -- DESCENT TO ARRIVAL ALTITUDE
     if not TolissCP.Object_sound:is_played("SetTCASToBelow") and DATAREF_XPDRTCASAltSelect ~= 2 then 
         TolissCP.Object_sound:insert("SetTCASToBelow",2) 
         TolissCP.Object_sound:set_isPlayed_flags("AltimeterCrossChecked",false)
     end
 
-    -- REACH 10000 FEETS EVENT (DESCENT)
     if M_UTILITIES.Round(DATAREF_altitude_ft_pilot) <= 9999 and M_UTILITIES.Round(DATAREF_altitude_ft_pilot) > 9995 and M_UTILITIES.Round(DATAREF_vvi_fpm_pilot) < 0 and not TolissCP.Object_sound:is_played("Pass10000LightsOn")  then
         TolissCP.Object_sound:insert("Pass10000LightsOn",0) 
     end
@@ -566,10 +472,6 @@ function TolissCP.CheckAutopilotPhase_Approach()
     ---------------------------------------------
     -- Missed Approach Set advice (REACH 2000) --
     ---------------------------------------------
-    -- DATAREF_GearLever == 1 -- down
-    --  AirbusFBW/NoSmokingSignsOn == 1 and AirbusFBW/SeatBeltSignsOn == 1
-    -- AirbusFBW/purser/fwd (done once and more)
-    -- 
     if DATAREF_radio_altimeter_height_ft_pilot < 1980 and TolissCP.isMissedApproachWarning and not TolissCP.Object_sound:is_played("MissedApproachSet") then
         if DATAREF_approach_type == 0 then -- ILS Approach
             TolissCP.Object_sound:insert("ApproachSet",1) 
@@ -602,12 +504,10 @@ function TolissCP.CheckAutopilotPhase_Approach()
         TolissCP.Object_sound:insert("Blue",0) 
     end
 
-    -- REVERSERS EVENT
     if DATAREF_thrust_reverser_deploy_ratio > 0.99 and not TolissCP.Object_sound:is_played("ReversersGreen") then 
         TolissCP.Object_sound:insert("ReversersGreen",0) 
     end
 
-    -- STOPING EVENT
     if DATAREF_IASCapt < 62  and not TolissCP.Object_sound:is_played("60kts") then 
         TolissCP.Object_sound:insert("60kts",0) 
     end
@@ -838,7 +738,7 @@ function TolissCP.SetDefaultValues()
     -----------
     -- FLAGS --
     -----------
-    TolissCP.isAutopilotPhasePreflight = true 
+    TolissCP.isAutopilotPhasePreflightDone = true 
     TolissCP.isReachCruise = false 
     TolissCP.isTodCaptured = false 
     TolissCP.isMissedApproachWarning = false 
@@ -858,11 +758,11 @@ function TolissCP.SetDefaultValues()
     TolissCP.Timer.AltitudeTargetChanged = 0
     TolissCP.Timer.AP1Engage = 0
     TolissCP.Timer.APLateralMode = 0
-    TolissCP.Timer.APVerticalArmed = 0
-    TolissCP.Timer.APVerticalMode = 0
+    TolissCP.Timer.VerticalArmedMode = 0 -- OK
+    TolissCP.Timer.VerticalEngagedMode = 0 -- OK not use for now
     TolissCP.Timer.ATHRmode = 0
     TolissCP.Timer.gear = 0
-    TolissCP.Timer.ThrustMode = 0 
+    TolissCP.Timer.ThrustEngagedMode = 0 --OK
     TolissCP.Timer.vertical_velocity = 0
    
     ---------------------------------------
@@ -944,7 +844,7 @@ function TolissCP_DisplayValuesPanel()
     draw_string_Times_Roman_24(800, 870, "APVerticalMode     = "..DATAREF_APVerticalMode or "")
     draw_string_Times_Roman_24(800, 840, "APVerticalMode arm = "..DATAREF_APVerticalArmed or "")
     draw_string_Times_Roman_24(800, 810, "APLateralMode      = "..DATAREF_APLateralMode or "")
-    draw_string_Times_Roman_24(800, 770, "Timer Thrust.      = "..TolissCP.Timer.ThrustMode)
+    draw_string_Times_Roman_24(800, 770, "Timer Thrust.      = "..TolissCP.Timer.ThrustEngagedMode)
     
     -- DRAW THE PARAMETERS VALUES
     graphics.set_color(1, 1, 1, 0.8)
@@ -1013,12 +913,12 @@ function TolissCP_TolissCallouts()
             TolissCP.CheckFlightModeAnnunciationsColumns()
             TolissCP.CheckAutopilotPhase_Approach()
             TolissCP.CheckFlapsAndGear()
-            TolissCP.isAutopilotPhasePreflight = false
+            TolissCP.isAutopilotPhasePreflightDone = false
     elseif  DATAREF_APPhase == 6 then
             TolissCP.CheckFlightModeAnnunciationsColumns()
             TolissCP.CheckAutopilotPhase_Go_around()
             TolissCP.CheckFlapsAndGear()
-            TolissCP.isAutopilotPhasePreflight = false
+            TolissCP.isAutopilotPhasePreflightDone = false
     elseif  DATAREF_APPhase == 7 then
             TolissCP.CheckAutopilotPhase_Done()
     end
