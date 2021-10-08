@@ -9,7 +9,10 @@
 
 ToLiss Callout Pro By Coussini 2021
 ]]
-                                                                                                                                                                                                        
+                 
+
+--RAFINER LA VALEUR DE TOT OF DESCENT SELON LE REPORT... 
+
 --+========================================+
 --|  R E Q U I R E D   L I B R A R I E S   |
 --+========================================+
@@ -48,7 +51,7 @@ function TolissCP.CheckFmaThrustEngagedMode()
     ----------------------------------------
     if TolissCP.Value.THRLeverMode ~= DATAREF_THRLeverMode then
         TolissCP.Value.THRLeverMode = DATAREF_THRLeverMode
-        TolissCP.Timer.ThrustEngagedMode = M_UTILITIES.SetTimer(2) -- waiting for the thrust lever to stay is in right position 
+        TolissCP.Timer.ThrustEngagedMode = M_UTILITIES.SetTimer(1) -- waiting for the thrust lever to stay is in right position 
     end
 
     ------------------------------------------
@@ -57,7 +60,7 @@ function TolissCP.CheckFmaThrustEngagedMode()
     if TolissCP.Value.athr_thrust_mode ~= DATAREF_athr_thrust_mode then
         TolissCP.Value.athr_thrust_mode = DATAREF_athr_thrust_mode
         if     DATAREF_athr_thrust_mode ~= 0 then 
-            TolissCP.Timer.ThrustEngagedMode = M_UTILITIES.SetTimer(2) -- waiting for the thrust lever to stay is in right position
+            TolissCP.Timer.ThrustEngagedMode = M_UTILITIES.SetTimer(1) -- waiting for the thrust lever to stay is in right position
         end 
     end
 
@@ -118,6 +121,10 @@ end
 --++--------------------------------------------------------------------++
 function TolissCP.CheckFmaVerticalEngagedMode()
 
+    ----------------------------------------
+    -- MODE THAT THE AUTO THRUST IS ARMED --
+    ----------------------------------------
+
     if TolissCP.Value.APVerticalMode ~= DATAREF_APVerticalMode then
         TolissCP.Value.APVerticalMode = DATAREF_APVerticalMode
         if     DATAREF_APVerticalMode == 1 then TolissCP.Object_sound:reset_and_insert("Climb",0) 
@@ -133,7 +140,6 @@ function TolissCP.CheckFmaVerticalEngagedMode()
             TolissCP.Object_sound:reset_and_insert("FinalApproach",0) 
             TolissCP.Object_sound:reset_and_insert("PleaseSetGoAroundAltitude",0) 
             TolissCP.isMissedApproachWarning = true
-        elseif DATAREF_APVerticalMode == 11 then TolissCP.Object_sound:reset_and_insert("LandGreen",0) 
         elseif DATAREF_APVerticalMode == 101 then TolissCP.Object_sound:reset_and_insert("OpenClimb",0)
         elseif DATAREF_APVerticalMode == 103 then TolissCP.Object_sound:reset_and_insert("AltStar",0) 
         elseif DATAREF_APVerticalMode == 104 then 
@@ -151,6 +157,15 @@ function TolissCP.CheckFmaVerticalEngagedMode()
         elseif DATAREF_APVerticalMode == 107 then TolissCP.Object_sound:reset_and_insert("VS",0) 
         elseif DATAREF_APVerticalMode == 112 then TolissCP.Object_sound:reset_and_insert("ExpediteClimb",0) 
         elseif DATAREF_APVerticalMode == 113 then TolissCP.Object_sound:reset_and_insert("ExpediteDescent",0) 
+        end 
+    end
+
+    --------------------------------------------------------------------
+    -- CHECK THE RELETED COLUMN 1 THRU 5 AGAINST THE THRUST SITUATION --
+    --------------------------------------------------------------------
+    if TolissCP.Timer.VerticalEngagedMode ~= 0 and DATAREF_total_running_time_sec > TolissCP.Timer.VerticalEngagedMode then
+        TolissCP.Timer.VerticalEngagedMode = 0
+        if DATAREF_APVerticalMode == 11 then TolissCP.Object_sound:reset_and_insert("LandGreen",0) 
         end 
     end
 
@@ -469,21 +484,29 @@ end
 
 function TolissCP.CheckAutopilotPhase_Approach()
 
+
+    ----------------------------------
+    -- Land Green event (REACH 400) --
+    ----------------------------------
+    if DATAREF_radio_altimeter_height_ft_pilot < 380  and DATAREF_APVerticalMode == 11 and not TolissCP.Object_sound:is_played("LandGreen") then
+        TolissCP.Object_sound:reset_and_insert("LandGreen",0) 
+    end
+
     ---------------------------------------------
     -- Missed Approach Set advice (REACH 2000) --
     ---------------------------------------------
     if DATAREF_radio_altimeter_height_ft_pilot < 1980 and TolissCP.isMissedApproachWarning and not TolissCP.Object_sound:is_played("MissedApproachSet") then
         if DATAREF_approach_type == 0 then -- ILS Approach
-            TolissCP.Object_sound:insert("ApproachSet",1) 
+            TolissCP.Object_sound:insert("ApproachSet",0) 
             if DATAREF_AP1Engage == 0 and DATAREF_AP2Engage == 0  and DATAREF_APPRilluminated == 1 and DATAREF_APVerticalMode ~= 8 then 
-                TolissCP.Object_sound:insert("Cat1",1) 
+                TolissCP.Object_sound:insert("Cat1",0) 
                 --TolissCP.Object_sound:insert("Single",0) 
             elseif DATAREF_AP1Engage == 1 and DATAREF_AP2Engage == 1 and DATAREF_APPRilluminated == 1 then 
                 TolissCP.Object_sound:insert("Cat3",0) 
-                TolissCP.Object_sound:insert("Dual",1) 
+                TolissCP.Object_sound:insert("Dual",0) 
             elseif DATAREF_AP1Engage == 1 or DATAREF_AP2Engage == 1 and DATAREF_APPRilluminated == 1 then 
                 TolissCP.Object_sound:insert("Cat3",0) 
-                TolissCP.Object_sound:insert("Single",1) 
+                TolissCP.Object_sound:insert("Single",0) 
             end
         end
         --[[
@@ -759,7 +782,7 @@ function TolissCP.SetDefaultValues()
     TolissCP.Timer.AP1Engage = 0
     TolissCP.Timer.APLateralMode = 0
     TolissCP.Timer.VerticalArmedMode = 0 -- OK
-    TolissCP.Timer.VerticalEngagedMode = 0 -- OK not use for now
+    TolissCP.Timer.VerticalEngagedMode = 0 -- OK
     TolissCP.Timer.ATHRmode = 0
     TolissCP.Timer.gear = 0
     TolissCP.Timer.ThrustEngagedMode = 0 --OK
