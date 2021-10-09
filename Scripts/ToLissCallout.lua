@@ -108,9 +108,11 @@ function TolissCP.CheckFmaThrustEngagedMode()
     -- CHECK THE SPEED OR MACH ANNUNCIATION --
     ------------------------------------------
     if TolissCP.Value.ATHRmode2 ~= DATAREF_ATHRmode2 then
-        TolissCP.Value.ATHRmode2 = DATAREF_ATHRmode2
-        if     DATAREF_ATHRmode2 == 4 then TolissCP.Object_sound:reset_and_insert("Speed",0) 
-        elseif DATAREF_ATHRmode2 == 5 then TolissCP.Object_sound:reset_and_insert("Mach",0) 
+        if DATAREF_ATHRmode2 == 4 or DATAREF_ATHRmode2 == 5 then -- bypass all error in descent mode neat the cruize level
+            TolissCP.Value.ATHRmode2 = DATAREF_ATHRmode2
+            if     DATAREF_ATHRmode2 == 4 then TolissCP.Object_sound:reset_and_insert("Speed",0) 
+            elseif DATAREF_ATHRmode2 == 5 then TolissCP.Object_sound:reset_and_insert("Mach",0) 
+            end 
         end 
     end
 
