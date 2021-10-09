@@ -345,6 +345,9 @@ function TolissCP.EvaluateFlapsValue(value)
 
 end
 
+--++---------------------------------------------------------------++
+--|| TolissCP.CheckFlapsAndGear() check all event around the flaps || 
+--++---------------------------------------------------------------++
 function TolissCP.CheckFlapsAndGear()
 
     if DATAREF_FlapLeverRatio ~= TolissCP.LastFlapSet and M_UTILITIES.ItemListValid(TolissCP.Flaps_valid,DATAREF_FlapLeverRatio) then
@@ -374,6 +377,9 @@ function TolissCP.CheckFlapsAndGear()
 
 end
 
+--++---------------------------------------------------------------------------------++
+--|| TolissCP.CheckFlightModeAnnunciationsColumns() check severals FMA column events || 
+--++---------------------------------------------------------------------------------++
 function TolissCP.CheckFlightModeAnnunciationsColumns()
 
     TolissCP.CheckFmaThrustEngagedMode()  
@@ -387,6 +393,9 @@ function TolissCP.CheckFlightModeAnnunciationsColumns()
 
 end
 
+--++--------------------------------------------------------------------++
+--|| TolissCP.CheckAutopilotPhasePreflight() check all preflight events || 
+--++--------------------------------------------------------------------++
 function TolissCP.CheckAutopilotPhasePreflight()
 
     if not TolissCP.isAutopilotPhasePreflightDone then
@@ -397,6 +406,9 @@ function TolissCP.CheckAutopilotPhasePreflight()
 
 end
 
+--++-----------------------------------------------------------------++
+--|| TolissCP.CheckAutopilotPhase_TakeOff() check all takeoff events || 
+--++-----------------------------------------------------------------++
 function TolissCP.CheckAutopilotPhase_TakeOff()
 
     if DATAREF_IASCapt > 78 and DATAREF_IASCapt < 95 and not TolissCP.Object_sound:is_played("ThrustSet") then 
@@ -421,6 +433,9 @@ function TolissCP.CheckAutopilotPhase_TakeOff()
 
 end
 
+--++-------------------------------------------------------------++
+--|| TolissCP.CheckAutopilotPhase_Climb() check all climb events || 
+--++-------------------------------------------------------------++
 function TolissCP.CheckAutopilotPhase_Climb()
 
     if DATAREF_VGreenDot_value > 0 and  M_UTILITIES.Round(DATAREF_IASCapt) > DATAREF_VGreenDot_value  and M_UTILITIES.Round(DATAREF_IASCapt) < (DATAREF_VGreenDot_value + 5) and not TolissCP.Object_sound:is_played("DownToTheLine")  then
@@ -438,36 +453,10 @@ function TolissCP.CheckAutopilotPhase_Climb()
 
 end
 
+--++---------------------------------------------------------------++
+--|| TolissCP.CheckAutopilotPhase_Cruize() check all cruize events || 
+--++---------------------------------------------------------------++
 function TolissCP.CheckAutopilotPhase_Cruize()
-
-    if DATAREF_MCDU1cont3g ~= "" or DATAREF_MCDU1cont3g ~= nil then 
-        TolissCP.DESCENTNM = tonumber(TolissCP.CatchTODTime(DATAREF_MCDU1cont3g))
-    end
-
-    if tonumber(TolissCP.CatchTODTime(DATAREF_MCDU1cont3g)) == 100 or tonumber(TolissCP.CatchTODTime(DATAREF_MCDU1cont3g)) == 75 then 
-        command_once("AirbusFBW/MCDU1Perf")
-        TolissCP.Object_sound:insert("TopOfDescentValueCaptured",2) 
-        TODvalue = TolissCP.CatchTODTime(DATAREF_MCDU1cont3g)
-        DESCENTNM = DATAREF_DistToDest - TODvalue
-    end
-
-    if TolissCP.isReachCruise and not TolissCP.isTodCaptured then
-        command_once("AirbusFBW/MCDU1Perf")
-    end
-
-    -- CAPTURE TOP OF DESCENT
-    if TolissCP.isReachCruise and string.find(DATAREF_MCDU1cont2g,"(T/D)") ~= nil and not TolissCP.isTodCaptured then
-        TolissCP.Object_sound:insert("TopOfDescentValueCaptured",2) 
-        TolissCP.isTodCaptured = true
-        TODvalue = TolissCP.CatchTODTime(DATAREF_MCDU1cont3g)
-        DESCENTNM = DATAREF_DistToDest - TODvalue
-    end
-
-    -- DISPLAY THE TOP OF DESCENT AGAINST THE DISTANCE OF DESTINATION
-    if TolissCP.isTodCaptured then
-        TolissCP.Top_of_descent_value = DATAREF_DistToDest-DESCENTNM
-        CUS_distance_to_tod = TolissCP.Top_of_descent_value
-    end
 
     if M_UTILITIES.Round(DATAREF_DistToDest) <= 180 and not TolissCP.Object_sound:is_played("Pass180NM") then 
         TolissCP.Object_sound:insert("Pass180NM",1) 
@@ -479,6 +468,9 @@ function TolissCP.CheckAutopilotPhase_Cruize()
 
 end
 
+--++-----------------------------------------------------------------++
+--|| TolissCP.CheckAutopilotPhase_Descent() check all descent events || 
+--++-----------------------------------------------------------------++
 function TolissCP.CheckAutopilotPhase_Descent()
 
     if not TolissCP.Object_sound:is_played("SetTCASToBelow") and DATAREF_XPDRTCASAltSelect ~= 2 then 
@@ -497,8 +489,10 @@ function TolissCP.CheckAutopilotPhase_Descent()
 
 end
 
+--++-------------------------------------------------------------------++
+--|| TolissCP.CheckAutopilotPhase_Approach() check all approach events || 
+--++-------------------------------------------------------------------++
 function TolissCP.CheckAutopilotPhase_Approach()
-
 
     ----------------------------------
     -- Land Green event (REACH 400) --
@@ -552,6 +546,9 @@ function TolissCP.CheckAutopilotPhase_Approach()
 
 end
 
+--++---------------------------------------------------------------------++
+--|| TolissCP.CheckAutopilotPhase_Go_around() check all go around events || 
+--++---------------------------------------------------------------------++
 function TolissCP.CheckAutopilotPhase_Go_around()
 
     if not TolissCP.Object_sound:is_played("GoAround") then 
@@ -561,7 +558,34 @@ function TolissCP.CheckAutopilotPhase_Go_around()
 
 end
 
+--++-------------------------------------------------------------++
+--|| TolissCP.CheckAutopilotPhase_Done() check all "done" events || 
+--++-------------------------------------------------------------++
 function TolissCP.CheckAutopilotPhase_Done()
+end
+
+--++-------------------------------------------------------------++
+--|| TolissCP.GetAndUpdateTopOfDescent() check all "done" events || 
+--++-------------------------------------------------------------++
+function TolissCP.GetAndUpdateTopOfDescent()
+
+    if DATAREF_total_running_time_sec > TolissCP.Timer.CapturingTopOfDescent then
+        command_once("AirbusFBW/MCDU2Perf")
+        if TolissCP.isReachCruise and string.find(DATAREF_MCDU2cont2g,"(T/D)") ~= nil then 
+            local tod_value = TolissCP.CatchTODTime(DATAREF_MCDU2cont3g)
+            TolissCP.DESCENTNM = DATAREF_DistToDest - tod_value
+            TolissCP.Object_sound:insert("TopOfDescentValueCaptured",0) 
+            TolissCP.Timer.CapturingTopOfDescent = M_UTILITIES.SetTimer(10)
+            TolissCP.isTodCaptured = true            
+        end
+    end
+
+    -- DISPLAY THE TOP OF DESCENT AGAINST THE DISTANCE OF DESTINATION
+    if TolissCP.isTodCaptured then
+        TolissCP.Top_of_descent_value = DATAREF_DistToDest-TolissCP.DESCENTNM -- the running value of the top of descent from the MDCU perf page
+        CUS_distance_to_tod = TolissCP.Top_of_descent_value
+    end
+
 end
 
 --+====================================================================+
@@ -607,8 +631,8 @@ function TolissCP.LoadingDataFromDataref()
     DataRef("DATAREF_GSCapt","AirbusFBW/GSCapt","readonly")
     DataRef("DATAREF_IASCapt","AirbusFBW/IASCapt","readonly")
     DataRef("DATAREF_m_fuel_total","sim/flightmodel/weight/m_fuel_total","readonly")
-    DataRef("DATAREF_MCDU1cont2g","AirbusFBW/MCDU1cont2g","readonly",0)
-    DataRef("DATAREF_MCDU1cont3g","AirbusFBW/MCDU1cont3g","readonly",0)
+    DataRef("DATAREF_MCDU2cont2g","AirbusFBW/MCDU2cont2g","readonly",0)
+    DataRef("DATAREF_MCDU2cont3g","AirbusFBW/MCDU2cont3g","readonly",0)
     DataRef("DATAREF_MDA","toliss_airbus/performance/MDA","readonly")
     DataRef("DATAREF_radio_altimeter_height_ft_pilot","sim/cockpit2/gauges/indicators/radio_altimeter_height_ft_pilot","readonly")
     DataRef("DATAREF_SpdBrakeDeployed","AirbusFBW/SpdBrakeDeployed","readonly")    
@@ -793,6 +817,7 @@ function TolissCP.SetDefaultValues()
     -- TIMER FOR A SPECIFIC VARIABLE --
     -----------------------------------
     TolissCP.Timer = {}
+    TolissCP.Timer.CapturingTopOfDescent = 0
     TolissCP.Timer.AltitudeTargetChanged = 0
     TolissCP.Timer.AP1Engage = 0
     TolissCP.Timer.APLateralMode = 0
@@ -940,10 +965,12 @@ function TolissCP_TolissCallouts()
             TolissCP.CheckFlightModeAnnunciationsColumns()
             TolissCP.CheckAutopilotPhase_Climb()
             TolissCP.CheckFlapsAndGear()
+            TolissCP.Timer.CapturingTopOfDescent = M_UTILITIES.SetTimer(0)
     elseif  DATAREF_APPhase == 3 then
             TolissCP.CheckFlightModeAnnunciationsColumns()
             TolissCP.CheckAutopilotPhase_Cruize()
             TolissCP.CheckFlapsAndGear()
+            TolissCP.GetAndUpdateTopOfDescent()
     elseif  DATAREF_APPhase == 4 then
             TolissCP.CheckFlightModeAnnunciationsColumns()
             TolissCP.CheckAutopilotPhase_Descent()
