@@ -569,19 +569,16 @@ end
 --++-------------------------------------------------------------++
 function TolissCP.GetAndUpdateTopOfDescent()
 
-    if DATAREF_total_running_time_sec > TolissCP.Timer.CapturingTopOfDescent then
+    if string.find(DATAREF_MCDU2cont2g,"(T/D)") == nil or string.find(DATAREF_MCDU2cont2g,"(T/D)") == "" then 
         command_once("AirbusFBW/MCDU2Perf")
-        if TolissCP.isReachCruise and string.find(DATAREF_MCDU2cont2g,"(T/D)") ~= nil then 
-            local tod_value = TolissCP.CatchTODTime(DATAREF_MCDU2cont3g)
-            TolissCP.DESCENTNM = DATAREF_DistToDest - tod_value
-            TolissCP.Object_sound:insert("TopOfDescentValueCaptured",0) 
-            TolissCP.Timer.CapturingTopOfDescent = M_UTILITIES.SetTimer(10)
-            TolissCP.isTodCaptured = true            
-        end
-    end
-
-    -- DISPLAY THE TOP OF DESCENT AGAINST THE DISTANCE OF DESTINATION
-    if TolissCP.isTodCaptured then
+        if not TolissCP.Object_sound:is_played("TopOfDescentValueCaptured") then 
+            TolissCP.Object_sound:insert("TopOfDescentValueCaptured",0)
+        end            
+    else
+        local tod_value = TolissCP.CatchTODTime(DATAREF_MCDU2cont3g)
+        TolissCP.DESCENTNM = DATAREF_DistToDest - tod_value
+        TolissCP.Timer.CapturingTopOfDescent = M_UTILITIES.SetTimer(10)
+        TolissCP.isTodCaptured = true            
         TolissCP.Top_of_descent_value = DATAREF_DistToDest-TolissCP.DESCENTNM -- the running value of the top of descent from the MDCU perf page
         CUS_distance_to_tod = TolissCP.Top_of_descent_value
     end
