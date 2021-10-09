@@ -148,12 +148,10 @@ function C_SOUNDS:insert_number(number,extra_gap)
     local i = 0
     local nb_of_words = 0
     str = M_UTILITIES.NumberInWords(number)
-    M_UTILITIES.OutputLog("insert_number as Sound In Sound Queue : "..str)
     _,nb_of_words = str:gsub("%S+","")
     for word in str:gmatch("%S+") do
         i = i + 1
         if i == nb_of_words then extra_gap = 0 end -- add a gap
-        M_UTILITIES.OutputLog("insert A number as Sound In Sound Queue : "..word)
         C_SOUNDS:insert(word,extra_gap)
     end
 end
@@ -174,7 +172,7 @@ function C_SOUNDS:play_the_first(index)
     local extra_gap = self.sounds_queue[1].extra_gap
     play_sound(self.sounds_informations[sound_name].source_pointer)
     self.sounds_queue[1].stop_at = M_UTILITIES.SetTimer(self.sounds_informations[sound_name].duration) + extra_gap
-    M_UTILITIES.OutputLog("play_the_first : "..sound_name.." stop At "..self.sounds_queue[1].stop_at.." current "..C_SOUNDS_total_running_time_sec)
+    M_UTILITIES.OutputLog("play the sound : "..sound_name.." stop At "..self.sounds_queue[1].stop_at.." current "..C_SOUNDS_total_running_time_sec)
 end 
 
 --++-------------------------------------------------------------------------------------------------------------++

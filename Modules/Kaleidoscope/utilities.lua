@@ -252,7 +252,6 @@ end
 --|| M_UTILITIES.Fsize() Return a time limit value for a timer ||
 --++-----------------------------------------------------------++
 function M_UTILITIES.SetTimer(time)
-     M_UTILITIES.OutputLog("total_running_time_sec"..M_UTILITIES_total_running_time_sec)
     return M_UTILITIES_total_running_time_sec + time
 end
 
