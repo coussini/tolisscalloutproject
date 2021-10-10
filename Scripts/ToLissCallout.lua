@@ -51,7 +51,9 @@ function TolissCP.CheckFmaThrustEngagedMode()
     ----------------------------------------
     if TolissCP.Value.THRLeverMode ~= DATAREF_THRLeverMode then
         TolissCP.Value.THRLeverMode = DATAREF_THRLeverMode
-        TolissCP.Timer.ThrustEngagedMode = M_UTILITIES.SetTimer(1) -- waiting for the thrust lever to stay is in right position 
+        if M_UTILITIES.ItemListValid({1,2,3,4},DATAREF_THRLeverMode) then -- bypass all others values
+            TolissCP.Timer.ThrustEngagedMode = M_UTILITIES.SetTimer(1) -- waiting for the thrust lever to stay is in right position 
+        end
     end
 
     ------------------------------------------
@@ -59,7 +61,7 @@ function TolissCP.CheckFmaThrustEngagedMode()
     ------------------------------------------
     if TolissCP.Value.athr_thrust_mode ~= DATAREF_athr_thrust_mode then
         TolissCP.Value.athr_thrust_mode = DATAREF_athr_thrust_mode
-        if     DATAREF_athr_thrust_mode ~= 0 then 
+        if M_UTILITIES.ItemListValid({1,2,3,4},DATAREF_athr_thrust_mode) then -- bypass all others values
             TolissCP.Timer.ThrustEngagedMode = M_UTILITIES.SetTimer(1) -- waiting for the thrust lever to stay is in right position
         end 
     end
@@ -108,8 +110,8 @@ function TolissCP.CheckFmaThrustEngagedMode()
     -- CHECK THE SPEED OR MACH ANNUNCIATION --
     ------------------------------------------
     if TolissCP.Value.ATHRmode2 ~= DATAREF_ATHRmode2 then
-        if DATAREF_ATHRmode2 == 4 or DATAREF_ATHRmode2 == 5 then -- bypass all error in descent mode neat the cruize level
-            TolissCP.Value.ATHRmode2 = DATAREF_ATHRmode2
+        TolissCP.Value.ATHRmode2 = DATAREF_ATHRmode2
+        if M_UTILITIES.ItemListValid({4,5},DATAREF_ATHRmode2) then -- bypass all others values
             if     DATAREF_ATHRmode2 == 4 then TolissCP.Object_sound:reset_and_insert("Speed",0) 
             elseif DATAREF_ATHRmode2 == 5 then TolissCP.Object_sound:reset_and_insert("Mach",0) 
             end 
@@ -126,122 +128,41 @@ function TolissCP.CheckFmaVerticalEngagedMode()
     ----------------------------------------
     -- MODE THAT THE AUTO THRUST IS ARMED --
     ----------------------------------------
-
     if TolissCP.Value.APVerticalMode ~= DATAREF_APVerticalMode then
         TolissCP.Value.APVerticalMode = DATAREF_APVerticalMode
-        if     DATAREF_APVerticalMode == 1 then TolissCP.Object_sound:reset_and_insert("Climb",0) 
-        elseif DATAREF_APVerticalMode == 2 then TolissCP.Object_sound:reset_and_insert("Des",0) 
-        elseif DATAREF_APVerticalMode == 3 then TolissCP.Object_sound:reset_and_insert("AltCSTStar",0) 
-        elseif DATAREF_APVerticalMode == 4 then TolissCP.Object_sound:reset_and_insert("AltCST",0) 
-        elseif DATAREF_APVerticalMode == 6 then 
-            TolissCP.Object_sound:reset_and_insert("GlideSlopeStar",0) 
-            TolissCP.Object_sound:reset_and_insert("PleaseSetGoAroundAltitude",0) 
-            TolissCP.isMissedApproachWarning = true
-        elseif DATAREF_APVerticalMode == 7 then TolissCP.Object_sound:reset_and_insert("GlideSlope",0) 
-        elseif DATAREF_APVerticalMode == 8 then 
-            TolissCP.Object_sound:reset_and_insert("FinalApproach",0) 
-            TolissCP.Object_sound:reset_and_insert("PleaseSetGoAroundAltitude",0) 
-            TolissCP.isMissedApproachWarning = true
-        elseif DATAREF_APVerticalMode == 101 then TolissCP.Object_sound:reset_and_insert("OpenClimb",0)
-        elseif DATAREF_APVerticalMode == 103 then TolissCP.Object_sound:reset_and_insert("AltStar",0) 
-        elseif DATAREF_APVerticalMode == 104 then 
-            if DATAREF_altitude_ft_pilot + 400 > DATAREF_cruise_alt then -- patch because ALT appear just before ALT CRZ
-            else 
-                TolissCP.Object_sound:reset_and_insert("Alt",0) 
+        if M_UTILITIES.ItemListValid({1,2,3,4,6,7,8,101,103,104,105,112,113},DATAREF_APVerticalMode) then -- bypass all others values
+            if     DATAREF_APVerticalMode == 1 then TolissCP.Object_sound:reset_and_insert("Climb",0) 
+            elseif DATAREF_APVerticalMode == 2 then TolissCP.Object_sound:reset_and_insert("Des",0) 
+            elseif DATAREF_APVerticalMode == 3 then TolissCP.Object_sound:reset_and_insert("AltCSTStar",0) 
+            elseif DATAREF_APVerticalMode == 4 then TolissCP.Object_sound:reset_and_insert("AltCST",0) 
+            elseif DATAREF_APVerticalMode == 6 then 
+                TolissCP.Object_sound:reset_and_insert("GlideSlopeStar",0) 
+                TolissCP.Object_sound:reset_and_insert("PleaseSetGoAroundAltitude",0) 
+                TolissCP.isMissedApproachWarning = true
+            elseif DATAREF_APVerticalMode == 7 then TolissCP.Object_sound:reset_and_insert("GlideSlope",0) 
+            elseif DATAREF_APVerticalMode == 8 then 
+                TolissCP.Object_sound:reset_and_insert("FinalApproach",0) 
+                TolissCP.Object_sound:reset_and_insert("PleaseSetGoAroundAltitude",0) 
+                TolissCP.isMissedApproachWarning = true
+            elseif DATAREF_APVerticalMode == 101 then TolissCP.Object_sound:reset_and_insert("OpenClimb",0)
+            elseif DATAREF_APVerticalMode == 103 then TolissCP.Object_sound:reset_and_insert("AltStar",0) 
+            elseif DATAREF_APVerticalMode == 104 then 
+                if DATAREF_altitude_ft_pilot + 400 > DATAREF_cruise_alt then -- patch because ALT appear just before ALT CRZ
+                else 
+                    TolissCP.Object_sound:reset_and_insert("Alt",0) 
+                end 
+            elseif DATAREF_APVerticalMode == 105 then 
+                TolissCP.isReachCruise = true            
+                TolissCP.Object_sound:reset_and_insert("AltCruise",4) -- alt play before alt cruise so... only cruise 
+                if DATAREF_XPDRTCASAltSelect ~= 1 then -- status of the button in the cockpit
+                    TolissCP.Object_sound:reset_and_insert("SetTCASToNeutral",0)
+                end
+            elseif DATAREF_APVerticalMode == 112 then TolissCP.Object_sound:reset_and_insert("ExpediteClimb",0) 
+            elseif DATAREF_APVerticalMode == 113 then TolissCP.Object_sound:reset_and_insert("ExpediteDescent",0) 
             end 
-        elseif DATAREF_APVerticalMode == 105 then 
-            TolissCP.isReachCruise = true            
-            TolissCP.Object_sound:reset_and_insert("AltCruise",4) -- alt play before alt cruise so... only cruise 
-            if DATAREF_XPDRTCASAltSelect ~= 1 then -- status of the button in the cockpit
-                TolissCP.Object_sound:reset_and_insert("SetTCASToNeutral",0)
-            end
-        -- VERTICAL MODE 107 can be V/S or FPA
-        elseif DATAREF_APVerticalMode == 107 then TolissCP.Object_sound:reset_and_insert("VS",0) 
-        elseif DATAREF_APVerticalMode == 112 then TolissCP.Object_sound:reset_and_insert("ExpediteClimb",0) 
-        elseif DATAREF_APVerticalMode == 113 then TolissCP.Object_sound:reset_and_insert("ExpediteDescent",0) 
         end 
     end
 
-    --------------------------------------------------------------------
-    -- CHECK THE RELETED COLUMN 1 THRU 5 AGAINST THE THRUST SITUATION --
-    --------------------------------------------------------------------
-    if TolissCP.Timer.VerticalEngagedMode ~= 0 and DATAREF_total_running_time_sec > TolissCP.Timer.VerticalEngagedMode then
-        TolissCP.Timer.VerticalEngagedMode = 0
-        if DATAREF_APVerticalMode == 11 then TolissCP.Object_sound:reset_and_insert("LandGreen",0) 
-        end 
-    end
-
-    --[[
-    if TolissCP.Timer.VerticalEngagedMode ~= 0 and DATAREF_total_running_time_sec > TolissCP.Timer.VerticalEngagedMode then
-        TolissCP.Timer.VerticalEngagedMode = 0
-        if     DATAREF_APVerticalMode == 0 and not TolissCP.Object_sound:is_played("SRS") then TolissCP.Object_sound:insert("SRS",0.5) 
-        elseif DATAREF_APVerticalMode == 1 and not TolissCP.Object_sound:is_played("Climb") then TolissCP.Object_sound:insert("Climb",0.5) 
-        elseif DATAREF_APVerticalMode == 2 and not TolissCP.Object_sound:is_played("Des") then TolissCP.Object_sound:insert("Des",0.5) 
-        elseif DATAREF_APVerticalMode == 3 and not TolissCP.Object_sound:is_played("AltCSTStar") then TolissCP.Object_sound:insert("AltCSTStar",0.5) 
-        elseif DATAREF_APVerticalMode == 4 and not TolissCP.Object_sound:is_played("AltCST") then TolissCP.Object_sound:insert("AltCST",0.5) 
-        elseif DATAREF_APVerticalMode == 6 and not TolissCP.Object_sound:is_played("GlideSlopeStar") then 
-            TolissCP.Object_sound:insert("GlideSlopeStar",0.5) 
-            TolissCP.Object_sound:insert("PleaseSetGoAroundAltitude",0.5) 
-            TolissCP.isMissedApproachWarning = true
-        elseif DATAREF_APVerticalMode == 7 and not TolissCP.Object_sound:is_played("GlideSlope") then TolissCP.Object_sound:insert("GlideSlope",0.5) 
-        elseif DATAREF_APVerticalMode == 8 and not TolissCP.Object_sound:is_played("FinalApproach") then 
-            TolissCP.Object_sound:insert("FinalApproach",0.5)
-            TolissCP.Object_sound:insert("PleaseSetGoAroundAltitude",0.5) 
-            TolissCP.isMissedApproachWarning = true
-        elseif DATAREF_APVerticalMode == 11 and not TolissCP.Object_sound:is_played("LandGreen") then TolissCP.Object_sound:insert("LandGreen",0.5) 
-        elseif DATAREF_APVerticalMode == 101 and not TolissCP.Object_sound:is_played("OpenClimb") then TolissCP.Object_sound:insert("OpenClimb",0.5)
-        elseif DATAREF_APVerticalMode == 102 and not TolissCP.Object_sound:is_played("OpenDescent") then TolissCP.Object_sound:insert("OpenDescent",0.5) 
-        elseif DATAREF_APVerticalMode == 103 and not TolissCP.Object_sound:is_played("AltStar") then TolissCP.Object_sound:insert("AltStar",0.5) 
-        elseif DATAREF_APVerticalMode == 104 and not TolissCP.Object_sound:is_played("Alt") then 
-            TolissCP.Object_sound:insert("Alt",0.5) 
-        elseif DATAREF_APVerticalMode == 105 and not TolissCP.Object_sound:is_played("AltCruise") then 
-            TolissCP.Object_sound:insert("AltCruise",0.5) 
-            TolissCP.Object_sound:insert("FlightLevel",0.5) 
-            TolissCP.Object_sound:insert_number(DATAREF_ap_altitude_reference,0.5) 
-            TolissCP.Object_sound:insert("Blue",1) 
-            if DATAREF_XPDRTCASAltSelect ~= 1 then -- status of the button in the cockpit
-                TolissCP.Object_sound:insert("SetTCASToNeutral",0.5)
-            end
-        elseif DATAREF_APVerticalMode == 107 and not TolissCP.Object_sound:is_played("VS") then 
-            TolissCP.Timer.vertical_velocity = M_UTILITIES.SetTimer(TolissCP.default_timer)
-            TolissCP.Value.vertical_velocity = DATAREF_vertical_velocity
-        elseif DATAREF_APVerticalMode == 112 and not TolissCP.Object_sound:is_played("ExpediteClimb") then 
-            TolissCP.Object_sound:insert("ExpediteClimb",0.5) 
-        elseif DATAREF_APVerticalMode == 113 and not TolissCP.Object_sound:is_played("ExpediteDescent") then 
-            TolissCP.Object_sound:insert("ExpediteDescent",0.5) 
-        end
-    end
-
-    if DATAREF_APVerticalMode == 107 and TolissCP.Value.vertical_velocity ~= DATAREF_vertical_velocity then
-        TolissCP.Timer.vertical_velocity = M_UTILITIES.SetTimer(TolissCP.default_timer)
-        TolissCP.Value.vertical_velocity = DATAREF_vertical_velocity
-    end
-
-    if TolissCP.Timer.vertical_velocity ~= 0 and DATAREF_total_running_time_sec > TolissCP.Timer.vertical_velocity then
-        TolissCP.Timer.vertical_velocity = 0
-        local vertical_velocity_integer_part = DATAREF_vertical_velocity
-        local vertical_velocity_decimal_part = 0
-        if M_UTILITIES.IndexOff(DATAREF_FMA1g," FPA ") then
-            vertical_velocity_integer_part = math.ceil(tonumber(DATAREF_vertical_velocity)/1000)
-            vertical_velocity_decimal_part = M_UTILITIES.GetDecimal(tonumber(DATAREF_vertical_velocity)/1000)
-            TolissCP.Object_sound:insert("FPA",1) 
-            TolissCP.Object_sound:set_isPlayed_flags("VS",true)
-        else
-            TolissCP.Object_sound:insert("VS",1) 
-        end
-        if DATAREF_vertical_velocity < 0 then 
-            TolissCP.Object_sound:insert("Minus",0.5) 
-        end
-        if vertical_velocity_integer_part < 0 then 
-            vertical_velocity_integer_part = vertical_velocity_integer_part * -1
-        end
-        TolissCP.Object_sound:insert_number(vertical_velocity_integer_part,0.5)
-        if vertical_velocity_decimal_part ~= nil and tonumber(vertical_velocity_decimal_part) > 0 then 
-            TolissCP.Object_sound:insert("Dot",0.5) 
-            TolissCP.Object_sound:insert_number(vertical_velocity_decimal_part,0.5)
-        end 
-    end
-    ]]
 end
 
 --++------------------------------------------------------------------++
@@ -251,15 +172,17 @@ function TolissCP.CheckFmaLateralEngagedMode()
 
     if TolissCP.Value.APLateralMode ~= DATAREF_APLateralMode then
         TolissCP.Value.APLateralMode = DATAREF_APLateralMode
-        if     DATAREF_APLateralMode == 2 then TolissCP.Object_sound:reset_and_insert("NAV",0) 
-        elseif DATAREF_APLateralMode == 6 then TolissCP.Object_sound:reset_and_insert("LocStar",0) 
-        elseif DATAREF_APLateralMode == 7 then TolissCP.Object_sound:reset_and_insert("Loc",0) 
-        elseif DATAREF_APLateralMode == 101 then 
-            if M_UTILITIES.IndexOff(DATAREF_FMA1g," TRACK ") then
-                TolissCP.Object_sound:reset_and_insert("TRACK",0) 
-            else
-                TolissCP.Object_sound:reset_and_insert("HDG",0) 
-            end
+        if M_UTILITIES.ItemListValid({2,6,7,101},DATAREF_APLateralMode) then -- bypass all others values
+            if     DATAREF_APLateralMode == 2 then TolissCP.Object_sound:reset_and_insert("NAV",0) 
+            elseif DATAREF_APLateralMode == 6 then TolissCP.Object_sound:reset_and_insert("LocStar",0) 
+            elseif DATAREF_APLateralMode == 7 then TolissCP.Object_sound:reset_and_insert("Loc",0) 
+            elseif DATAREF_APLateralMode == 101 then 
+                if M_UTILITIES.IndexOff(DATAREF_FMA1g," TRACK ") then
+                    TolissCP.Object_sound:reset_and_insert("TRACK",0) 
+                else
+                    TolissCP.Object_sound:reset_and_insert("HDG",0) 
+                end
+            end 
         end 
     end
 
@@ -272,15 +195,19 @@ function TolissCP.CheckFmaStatusAndSpecialMessagesEngagedMode()
 
     if TolissCP.Value.AP1Engage ~= DATAREF_AP1Engage then
         TolissCP.Value.AP1Engage = DATAREF_AP1Engage
-        if DATAREF_AP1Engage == 1 then 
-            TolissCP.Object_sound:reset_and_insert("AP1On",0) 
+        if M_UTILITIES.ItemListValid({1},DATAREF_AP1Engage) then -- bypass all others values
+            if DATAREF_AP1Engage == 1 then 
+                TolissCP.Object_sound:reset_and_insert("AP1On",0) 
+            end 
         end 
     end
 
     if TolissCP.Value.AP2Engage ~= DATAREF_AP2Engage then
         TolissCP.Value.AP2Engage = DATAREF_AP2Engage
-        if DATAREF_AP2Engage == 1 then 
-            TolissCP.Object_sound:reset_and_insert("AP2On",0) 
+        if M_UTILITIES.ItemListValid({1},DATAREF_AP2Engage) then -- bypass all others values
+            if DATAREF_AP2Engage == 1 then 
+                TolissCP.Object_sound:reset_and_insert("AP2On",0) 
+            end 
         end 
     end
 
@@ -291,21 +218,11 @@ end
 --++------------------------------------------------------------------------++
 function TolissCP.CheckFmaVerticalArmedMode()
 
-
-    --[[
-
-   1: G/S (cyan)
-    2: CLB armed, 4: ALT (cyan) armed, 6: DES armed, 8: ALT CSTR (magenta) armed, 10: OP CLB armed
-APVerticalArmed[2] = "CLB armed"
-APVerticalArmed[4] = "DES armed"
-APVerticalArmed[6] = "ALT blue armed"
-APVerticalArmed[8] = "ALT CSTR magenta armed"
-APVerticalArmed[10] = "OP CLB armed"
-    ]]
-
     if TolissCP.Value.APVerticalArmed ~= DATAREF_APVerticalArmed then
         TolissCP.Value.APVerticalArmed = DATAREF_APVerticalArmed
-        TolissCP.Timer.VerticalArmedMode = M_UTILITIES.SetTimer(2) -- waiting for the alt button to stay is in right position
+        if M_UTILITIES.ItemListValid({6,8},DATAREF_APVerticalArmed) then -- bypass all others values
+            TolissCP.Timer.VerticalArmedMode = M_UTILITIES.SetTimer(2) -- waiting for the alt button to stay is in right position
+        end
     end
 
     if TolissCP.Value.AltitudeTargetChanged ~= DATAREF_ap_alt_target_value then
@@ -357,23 +274,19 @@ function TolissCP.CheckFlapsAndGear()
     end
 
     if TolissCP.Value.gear ~= DATAREF_GearLever then
-        TolissCP.Timer.gear = M_UTILITIES.SetTimer(TolissCP.default_timer)
         TolissCP.Value.gear = DATAREF_GearLever
-    end
-
-    if not TolissCP.Object_sound:is_played("PositiveClimb") then 
-        if (M_UTILITIES.Round(DATAREF_vvi_fpm_pilot) > 500 and DATAREF_APPhase == 1) or  
-           M_UTILITIES.Round(DATAREF_vvi_fpm_pilot) > 500 and DATAREF_APPhase == 6 then 
-            TolissCP.Object_sound:insert("PositiveClimb",0) 
-        end
-    end
-
-    if TolissCP.Timer.gear ~= 0 and DATAREF_total_running_time_sec > TolissCP.Timer.gear then
-        TolissCP.Timer.gear = 0
         if DATAREF_GearLever == 0 then 
             TolissCP.Object_sound:insert("GearUp",0) 
         else
             TolissCP.Object_sound:insert("GearDown",0)
+        end
+    end
+
+    --DATAREF_radio_altimeter_height_ft_pilot
+    if not TolissCP.Object_sound:is_played("PositiveClimb") then 
+        if (M_UTILITIES.Round(DATAREF_vvi_fpm_pilot) > 500 and DATAREF_APPhase == 1) or  
+           M_UTILITIES.Round(DATAREF_vvi_fpm_pilot) > 500 and DATAREF_APPhase == 6 then 
+            TolissCP.Object_sound:insert("PositiveClimb",0) 
         end
     end
 
