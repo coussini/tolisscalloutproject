@@ -171,6 +171,7 @@ function C_SOUNDS:play_the_first(index)
     local sound_name = self.sounds_queue[1].name
     local extra_gap = self.sounds_queue[1].extra_gap
     play_sound(self.sounds_informations[sound_name].source_pointer)
+    C_SOUNDS:set_isPlayed_flags(sound_name,true)
     self.sounds_queue[1].stop_at = M_UTILITIES.SetTimer(self.sounds_informations[sound_name].duration) + extra_gap
     M_UTILITIES.OutputLog("play the sound : "..sound_name.." stop At "..self.sounds_queue[1].stop_at.." current "..C_SOUNDS_total_running_time_sec)
 end 
@@ -196,7 +197,7 @@ end
 --++-------------------------------------------------------------------------------------------------------------++
 --|| C_SOUNDS:play_the_first() Play the first sound in the queue, then set the get the duration for the time out || 
 --++-------------------------------------------------------------------------------------------------------------++
-function C_SOUNDS:reset_and_insert(sound_name,extra_gap)
+function C_SOUNDS:set_and_insert(sound_name,extra_gap)
     C_SOUNDS:set_isPlayed_flags(sound_name,false)
     C_SOUNDS:insert(sound_name,extra_gap)
 end 
