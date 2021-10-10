@@ -61,7 +61,7 @@ function TolissCP.CheckFmaThrustEngagedMode()
     ------------------------------------------
     if TolissCP.Value.athr_thrust_mode ~= DATAREF_athr_thrust_mode then
         TolissCP.Value.athr_thrust_mode = DATAREF_athr_thrust_mode
-        if M_UTILITIES.ItemListValid({1,2,3,4},DATAREF_athr_thrust_mode) then -- bypass all others values
+        if M_UTILITIES.ItemListValid({1,2,3,4},DATAREF_athr_thrust_mode) and DATAREF_radio_altimeter_height_ft_pilot > 50 then -- bypass all others values
             TolissCP.Timer.ThrustEngagedMode = M_UTILITIES.SetTimer(1) -- waiting for the thrust lever to stay is in right position
         end 
     end
