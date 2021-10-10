@@ -108,9 +108,11 @@ function TolissCP.CheckFmaThrustEngagedMode()
     ------------------------------------------
     if TolissCP.Value.ATHRmode2 ~= DATAREF_ATHRmode2 then
         TolissCP.Value.ATHRmode2 = DATAREF_ATHRmode2
-        if     DATAREF_ATHRmode2 == 4 then TolissCP.Object_sound:reset_and_insert("Speed",0) 
-        elseif DATAREF_ATHRmode2 == 5 then TolissCP.Object_sound:reset_and_insert("Mach",0) 
-        end 
+        if M_UTILITIES.ItemListValid({4,5},DATAREF_ATHRmode2) then -- bypass all others values (THAT'S IMPORTANT HERE)
+            if     DATAREF_ATHRmode2 == 4 then TolissCP.Object_sound:reset_and_insert("Speed",0) 
+            elseif DATAREF_ATHRmode2 == 5 then TolissCP.Object_sound:reset_and_insert("Mach",0) 
+            end 
+        end
     end
 
 end
