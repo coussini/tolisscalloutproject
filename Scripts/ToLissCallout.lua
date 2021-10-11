@@ -706,10 +706,6 @@ function TolissCP.SetDefaultValues()
     TolissCP.Value.gear = DATAREF_GearLever or 0
     TolissCP.Value.THRLeverMode = DATAREF_THRLeverMode or 0 -- THRUST MODE ARMED
 
-    -------------------------------------------------------------------------------
-    -- TEMPORARY MESSAGE TO MAKE SURE THAT THE DEFAULT IS DONE IN THE RIGHT TIME --
-    -------------------------------------------------------------------------------
-
     M_UTILITIES.OutputLog("Set Default Values done")
 
 end 
@@ -757,13 +753,13 @@ function TolissCP_DisplayValuesPanel()
         
     glColor4f(M_COLORS.YELLOW.red, M_COLORS.YELLOW.green, M_COLORS.YELLOW.blue, 1)
     
-    --[[
-    draw_string_Times_Roman_24(800, 900, "PHASE              = "..DATAREF_APPhase or "")
-    draw_string_Times_Roman_24(800, 870, "APVerticalMode     = "..DATAREF_APVerticalMode or "")
-    draw_string_Times_Roman_24(800, 840, "APVerticalMode arm = "..DATAREF_APVerticalArmed or "")
-    draw_string_Times_Roman_24(800, 810, "APLateralMode      = "..DATAREF_APLateralMode or "")
-    draw_string_Times_Roman_24(800, 770, "Timer Thrust.      = "..TolissCP.Timer.ThrustEngagedMode)
-    ]]
+    
+    draw_string_Times_Roman_24(800, 900, "PHASE                    = "..DATAREF_APPhase or "")
+    draw_string_Times_Roman_24(800, 870, "DATAREF_THRLeverMode     = "..DATAREF_THRLeverMode or "")
+    draw_string_Times_Roman_24(800, 840, "DATAREF_athr_thrust_mode = "..DATAREF_athr_thrust_mode or "")
+    draw_string_Times_Roman_24(800, 810, "DATAREF_ATHRmode         = "..DATAREF_ATHRmode or "")
+    draw_string_Times_Roman_24(800, 770, "DATAREF_ATHRmode2        = "..DATAREF_ATHRmode2)
+    
     -- DRAW THE PARAMETERS VALUES
     graphics.set_color(1, 1, 1, 0.8)
 
@@ -820,12 +816,12 @@ function TolissCP_TolissCallouts()
             TolissCP.CheckAutopilotPhase_Climb()
             TolissCP.CheckFlapsAndGear()
     elseif  DATAREF_APPhase == 3 then
+            TolissCP.Object_sound:set_isPlayed_flags("AltimeterCrossChecked",false) -- reset this flag to allow another event like this
             TolissCP.CheckFlightModeAnnunciationsColumns()
             TolissCP.CheckAutopilotPhase_Cruize()
             TolissCP.CheckFlapsAndGear()
             TolissCP.GetAndUpdateTopOfDescent()
     elseif  DATAREF_APPhase == 4 then
-            TolissCP.Object_sound:set_isPlayed_flags("AltimeterCrossChecked",false) -- reset this flag to allow another event like this
             TolissCP.CheckFlightModeAnnunciationsColumns()
             TolissCP.CheckAutopilotPhase_Descent()
             TolissCP.CheckFlapsAndGear()
