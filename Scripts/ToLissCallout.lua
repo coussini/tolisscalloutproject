@@ -43,16 +43,13 @@ end
 --++----------------------------------------------------------------------++
 function TolissCP.CheckFmaThrustEngagedMode()
 
-    -----------------------------------------------------------------------------------------------------------
-    -- IL Y AVAIS THR CLB, ENSUITE IL Y A EU SPEED ALT CST* PUIS ALT CST, PUIS REVIENS THR CLB SANS ETRE DIT --
-    -----------------------------------------------------------------------------------------------------------
-    
-    
-
     ----------------------------------------
     -- MODE THAT THE AUTO THRUST IS ARMED --
-    ----------------------------------------
-    if M_UTILITIES.ItemListValid({1,2,3,4},DATAREF_THRLeverMode) then -- bypass all others values
+    -------------------------------------------------------------------------------------------------
+    -- Note : Keep only some values and bypass the other                                           --
+    --        The 0 is important because it possible to go for speed event and after THR CLB event --
+    -------------------------------------------------------------------------------------------------
+    if M_UTILITIES.ItemListValid({0,1,2,3,4},DATAREF_THRLeverMode) then 
         if TolissCP.Value.THRLeverMode ~= DATAREF_THRLeverMode then
             TolissCP.Value.THRLeverMode = DATAREF_THRLeverMode
             TolissCP.Timer.ThrustEngagedMode = M_UTILITIES.SetTimer(1) -- waiting for the thrust lever to stay is in right position 
@@ -61,8 +58,11 @@ function TolissCP.CheckFmaThrustEngagedMode()
 
     ------------------------------------------
     -- MODE THAT THE AUTO THRUST IS ENGAGED --
-    ------------------------------------------
-    if M_UTILITIES.ItemListValid({1,2,3,4},DATAREF_athr_thrust_mode) and DATAREF_radio_altimeter_height_ft_pilot > 50 then -- bypass all others values
+    -------------------------------------------------------------------------------------------------
+    -- Note : Keep only some values and bypass the other                                           --
+    --        The 0 is important because it possible to go for speed event and after THR CLB event --
+    -------------------------------------------------------------------------------------------------
+    if M_UTILITIES.ItemListValid({0,1,2,3,4},DATAREF_athr_thrust_mode) and DATAREF_radio_altimeter_height_ft_pilot > 50 then
         if TolissCP.Value.athr_thrust_mode ~= DATAREF_athr_thrust_mode then
             TolissCP.Value.athr_thrust_mode = DATAREF_athr_thrust_mode
             TolissCP.Timer.ThrustEngagedMode = M_UTILITIES.SetTimer(1) -- waiting for the thrust lever to stay is in right position
