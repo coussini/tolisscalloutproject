@@ -22,6 +22,8 @@ local C_SOUNDS = require("Kaleidoscope.classes.C_SOUNDS")
 --+==================================+
 local TolissCP = {} -- Toliss Callout Pro
 
+--Mettre DPMW SYS OFF temporairement
+
 --+====================================================================+
 --|       T H E   F O L L O W I N G   A R E   H I G H   L E V E L      |
 --|                       F U N C T I O N S                            |

@@ -5,4 +5,7 @@
 *.psd
 Icon*
 TCP.*
+*.mp4
+*.txt
+*.mp3
 DS_Store.xorg
