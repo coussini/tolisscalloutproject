@@ -8,4 +8,7 @@ TCP.*
 *.mp4
 *.txt
 *.mp3
+*.mov
+*.aac
+*.md*
 DS_Store.xorg
