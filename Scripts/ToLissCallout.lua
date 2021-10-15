@@ -122,11 +122,17 @@ function TolissCP.CheckFmaVerticalEngagedMode()
             TolissCP.Value.APVerticalMode = DATAREF_APVerticalMode
             if     DATAREF_APVerticalMode == 0 then TolissCP.Object_sound:set_and_insert("SRS",0) 
             elseif DATAREF_APVerticalMode == 1 then TolissCP.Object_sound:set_and_insert("Climb",0) 
-            elseif DATAREF_APVerticalMode == 2 then TolissCP.Object_sound:set_and_insert("Des",0) 
-            elseif DATAREF_APVerticalMode == 3 then TolissCP.Object_sound:set_and_insert("AltCSTStar",0) 
-            elseif DATAREF_APVerticalMode == 4 then TolissCP.Object_sound:set_and_insert("AltCST",0) 
+            elseif DATAREF_APVerticalMode == 2 then TolissCP.Object_sound:set_and_insert("Descent",0) 
+            elseif DATAREF_APVerticalMode == 3 then 
+                TolissCP.Object_sound:set_and_insert("Alt",0.5) 
+                TolissCP.Object_sound:set_and_insert("CST",0) 
+                TolissCP.Object_sound:set_and_insert("Star",0) 
+            elseif DATAREF_APVerticalMode == 4 then 
+                TolissCP.Object_sound:set_and_insert("Alt",0.5) 
+                TolissCP.Object_sound:set_and_insert("CST",0) 
             elseif DATAREF_APVerticalMode == 6 then 
-                TolissCP.Object_sound:set_and_insert("GlideSlopeStar",0) 
+                TolissCP.Object_sound:set_and_insert("GlideSlope",0) 
+                TolissCP.Object_sound:set_and_insert("Star",0) 
                 TolissCP.Object_sound:set_and_insert("PleaseSetGoAroundAltitude",0) 
                 TolissCP.isMissedApproachWarning = true
             elseif DATAREF_APVerticalMode == 7 then TolissCP.Object_sound:set_and_insert("GlideSlope",0) 
@@ -134,9 +140,15 @@ function TolissCP.CheckFmaVerticalEngagedMode()
                 TolissCP.Object_sound:set_and_insert("FinalApproach",0) 
                 TolissCP.Object_sound:set_and_insert("PleaseSetGoAroundAltitude",0) 
                 TolissCP.isMissedApproachWarning = true
-            elseif DATAREF_APVerticalMode == 101 then TolissCP.Object_sound:set_and_insert("OpenClimb",0)
-            elseif DATAREF_APVerticalMode == 102 then TolissCP.Object_sound:set_and_insert("OpenDescent",0)            
-            elseif DATAREF_APVerticalMode == 103 then TolissCP.Object_sound:set_and_insert("AltStar",0) 
+            elseif DATAREF_APVerticalMode == 101 then 
+                TolissCP.Object_sound:set_and_insert("Open",0)
+                TolissCP.Object_sound:set_and_insert("Climb",0)
+            elseif DATAREF_APVerticalMode == 102 then 
+                TolissCP.Object_sound:set_and_insert("Open",0)            
+                TolissCP.Object_sound:set_and_insert("Descent",0)            
+            elseif DATAREF_APVerticalMode == 103 then 
+                TolissCP.Object_sound:set_and_insert("Alt",0.5) 
+                TolissCP.Object_sound:set_and_insert("Star",0) 
             elseif DATAREF_APVerticalMode == 104 then 
                 if DATAREF_altitude_ft_pilot + 400 > DATAREF_cruise_alt then -- patch because ALT appear just before ALT CRZ
                 else 
@@ -144,9 +156,14 @@ function TolissCP.CheckFmaVerticalEngagedMode()
                 end 
             elseif DATAREF_APVerticalMode == 105 then 
                 TolissCP.isReachCruise = true            
-                TolissCP.Object_sound:set_and_insert("AltCruise",4) -- alt play before alt cruise so... only cruise 
-            elseif DATAREF_APVerticalMode == 112 then TolissCP.Object_sound:set_and_insert("ExpediteClimb",0) 
-            elseif DATAREF_APVerticalMode == 113 then TolissCP.Object_sound:set_and_insert("ExpediteDescent",0) 
+                TolissCP.Object_sound:set_and_insert("Alt",0.5) -- alt play before alt cruise so... only cruise 
+                TolissCP.Object_sound:set_and_insert("Cruise",4) -- alt play before alt cruise so... only cruise 
+            elseif DATAREF_APVerticalMode == 112 then 
+                TolissCP.Object_sound:set_and_insert("Expedite",0) 
+                TolissCP.Object_sound:set_and_insert("Climb",0) 
+            elseif DATAREF_APVerticalMode == 113 then 
+                TolissCP.Object_sound:set_and_insert("Expedite",0) 
+                TolissCP.Object_sound:set_and_insert("Descent",0) 
             end 
         end
     end
@@ -164,7 +181,9 @@ function TolissCP.CheckFmaLateralEngagedMode()
             if     DATAREF_APLateralMode == 0 then TolissCP.Object_sound:set_and_insert("RWY",0) 
             elseif DATAREF_APLateralMode == 1 then TolissCP.Object_sound:set_and_insert("RWYTRK",0) 
             elseif DATAREF_APLateralMode == 2 then TolissCP.Object_sound:set_and_insert("NAV",0) 
-            elseif DATAREF_APLateralMode == 6 then TolissCP.Object_sound:set_and_insert("LocStar",0) 
+            elseif DATAREF_APLateralMode == 6 then 
+                TolissCP.Object_sound:set_and_insert("Loc",0) 
+                TolissCP.Object_sound:set_and_insert("Star",0) 
             elseif DATAREF_APLateralMode == 7 then TolissCP.Object_sound:set_and_insert("Loc",0) 
             elseif DATAREF_APLateralMode == 12 then TolissCP.Object_sound:set_and_insert("GATRK",0) 
             elseif DATAREF_APLateralMode == 101 then 
@@ -201,7 +220,9 @@ function TolissCP.CheckFmaStatusAndSpecialMessagesEngagedMode()
     -- auto pilot, flight director and auto thrust status
     if TolissCP.Value.ATHRmode ~= DATAREF_ATHRmode then 
         TolissCP.Value.ATHRmode = DATAREF_ATHRmode 
-        if     DATAREF_ATHRmode == 1 then TolissCP.Object_sound:set_and_insert("ATHRBlue",0) 
+        if     DATAREF_ATHRmode == 1 then 
+            TolissCP.Object_sound:set_and_insert("ATHR",0) 
+            TolissCP.Object_sound:set_and_insert("Blue",0) 
         elseif DATAREF_ATHRmode == 2 then TolissCP.Object_sound:set_and_insert("ATHR",0) 
         end 
     end 
@@ -229,12 +250,12 @@ function TolissCP.CheckFmaVerticalArmedMode()
         TolissCP.Timer.VerticalArmedMode = 0
         if     DATAREF_APVerticalArmed == 6 then 
             TolissCP.Object_sound:set_and_insert("Alt",0.5) 
-            TolissCP.Object_sound:set_and_insert("FlightLevel",0) 
+            --TolissCP.Object_sound:set_and_insert("FlightLevel",0) 
             TolissCP.Object_sound:insert_number(DATAREF_ap_alt_target_value,0) 
             TolissCP.Object_sound:set_and_insert("Blue",0) 
         elseif DATAREF_APVerticalArmed == 8 then 
             TolissCP.Object_sound:set_and_insert("Alt",0.5) 
-            TolissCP.Object_sound:set_and_insert("FlightLevel",0) 
+            --TolissCP.Object_sound:set_and_insert("FlightLevel",0) 
             TolissCP.Object_sound:insert_number(DATAREF_ConstraintAlt,0) 
             TolissCP.Object_sound:set_and_insert("Magenta",0) 
         end 
@@ -412,8 +433,9 @@ function TolissCP.CheckAutopilotPhase_Approach()
     ----------------------------------
     -- Land Green event (REACH 400) --
     ----------------------------------
-    if DATAREF_radio_altimeter_height_ft_pilot < 380  and DATAREF_APVerticalMode == 11 and not TolissCP.Object_sound:is_played("LandGreen") then
-        TolissCP.Object_sound:set_and_insert("LandGreen",0) 
+    if DATAREF_radio_altimeter_height_ft_pilot < 360  and DATAREF_APVerticalMode == 11 and not TolissCP.Object_sound:is_played("Land") then
+        TolissCP.Object_sound:set_and_insert("Land",0) 
+        TolissCP.Object_sound:set_and_insert("Green",0) 
     end
 
     -------------------------------------------------------------------------
@@ -442,8 +464,9 @@ function TolissCP.CheckAutopilotPhase_Approach()
         TolissCP.Object_sound:set_and_insert("Blue",0) 
     end
 
-    if DATAREF_thrust_reverser_deploy_ratio > 0.99 and not TolissCP.Object_sound:is_played("ReversersGreen") then 
-        TolissCP.Object_sound:set_and_insert("ReversersGreen",0) 
+    if DATAREF_thrust_reverser_deploy_ratio > 0.99 and not TolissCP.Object_sound:is_played("Reversers") then 
+        TolissCP.Object_sound:set_and_insert("Reversers",0) 
+        TolissCP.Object_sound:set_and_insert("Green",0) 
     end
 
     if DATAREF_IASCapt < 62  and not TolissCP.Object_sound:is_played("60kts") then 
@@ -583,81 +606,75 @@ function TolissCP.PrepareSoundList()
         table.insert(list_sounds,number)
     end
 
-    table.insert(list_sounds,"100kts")
+    table.insert(list_sounds,"100Kts")
     table.insert(list_sounds,"60kts")
-    table.insert(list_sounds,"Alt")
-    table.insert(list_sounds,"AltCruise")
-    table.insert(list_sounds,"AltCST")
-    table.insert(list_sounds,"AltCSTStar")
-    table.insert(list_sounds,"AltimeterCrossChecked")
-    table.insert(list_sounds,"AltStar")
     table.insert(list_sounds,"AP1On")
     table.insert(list_sounds,"AP2On")
-    table.insert(list_sounds,"ApproachSet")
     table.insert(list_sounds,"ATHR")
-    table.insert(list_sounds,"ATHRBlue")
+    table.insert(list_sounds,"Alt")
+    table.insert(list_sounds,"AltimeterCrossChecked")
+    table.insert(list_sounds,"ApproachSet")
     table.insert(list_sounds,"Blue")
-    table.insert(list_sounds,"Cat1")
-    table.insert(list_sounds,"Cat3")
+    table.insert(list_sounds,"CAT1")
+    table.insert(list_sounds,"CAT3")
+    table.insert(list_sounds,"CST")
     table.insert(list_sounds,"Climb")
-    table.insert(list_sounds,"Des")
+    table.insert(list_sounds,"Cruise")
+    table.insert(list_sounds,"Descent")
     table.insert(list_sounds,"DownToTheLine")
     table.insert(list_sounds,"Dual")
-    table.insert(list_sounds,"ExpediteClimb")
-    table.insert(list_sounds,"ExpediteDescent")
+    table.insert(list_sounds,"Expedite")
     table.insert(list_sounds,"FinalApproach")
     table.insert(list_sounds,"Flaps1")
     table.insert(list_sounds,"Flaps2")
     table.insert(list_sounds,"Flaps3")
     table.insert(list_sounds,"FlapsFULL")
     table.insert(list_sounds,"FlapsUP")
-    table.insert(list_sounds,"FlightLevel")
     table.insert(list_sounds,"GATRK")
     table.insert(list_sounds,"GearDown")
     table.insert(list_sounds,"GearUp")
     table.insert(list_sounds,"GlideSlope")
-    table.insert(list_sounds,"GlideSlopeStar")
     table.insert(list_sounds,"GoAround")
+    table.insert(list_sounds,"Green")
     table.insert(list_sounds,"HDG")
     table.insert(list_sounds,"Hundred")
-    table.insert(list_sounds,"LandGreen")
+    table.insert(list_sounds,"Land")
     table.insert(list_sounds,"Loc")
-    table.insert(list_sounds,"LocStar")
     table.insert(list_sounds,"Mach")
     table.insert(list_sounds,"Magenta")
-    table.insert(list_sounds,"ManFlex") 
-    table.insert(list_sounds,"ManMCT") 
-    table.insert(list_sounds,"ManThrust") 
-    table.insert(list_sounds,"ManTOGA") 
+    table.insert(list_sounds,"ManFlex")
+    table.insert(list_sounds,"ManMCT")
+    table.insert(list_sounds,"ManTOGA")
+    table.insert(list_sounds,"ManThrust")
     table.insert(list_sounds,"MissedApproachSet")
     table.insert(list_sounds,"NAV")
     table.insert(list_sounds,"NODH")
-    table.insert(list_sounds,"OpenClimb")
-    table.insert(list_sounds,"OpenDescent")
+    table.insert(list_sounds,"Open")
     table.insert(list_sounds,"Pass10000LightsOff")
     table.insert(list_sounds,"Pass10000LightsOn")
     table.insert(list_sounds,"Pass10NM")
     table.insert(list_sounds,"Pass180NM")
     table.insert(list_sounds,"PleaseSetGoAroundAltitude")
     table.insert(list_sounds,"PositiveClimb")
-    table.insert(list_sounds,"ReversersGreen")
     table.insert(list_sounds,"RWY")
     table.insert(list_sounds,"RWYTRK")
+    table.insert(list_sounds,"Reversers")
+    table.insert(list_sounds,"SRS")
     table.insert(list_sounds,"SetTCASToBelow")
     table.insert(list_sounds,"SetTCASToNeutral")
     table.insert(list_sounds,"Single")
     table.insert(list_sounds,"Speed")
-    table.insert(list_sounds,"SRS")
     table.insert(list_sounds,"StandardCrossChecked")
-    table.insert(list_sounds,"Thousand")
-    table.insert(list_sounds,"ThrustClimb") 
-    table.insert(list_sounds,"ThrustIdle") 
-    table.insert(list_sounds,"ThrustLVR") 
-    table.insert(list_sounds,"ThrustMCT") 
-    table.insert(list_sounds,"ThrustSet")
+    table.insert(list_sounds,"Star")
     table.insert(list_sounds,"TOGALK")
     table.insert(list_sounds,"TOGASet")
     table.insert(list_sounds,"TRACK")
+    table.insert(list_sounds,"Thousand")
+    table.insert(list_sounds,"ThrustClimb")
+    table.insert(list_sounds,"ThrustIdle")
+    table.insert(list_sounds,"ThrustLVR")
+    table.insert(list_sounds,"ThrustMCT")
+    table.insert(list_sounds,"ThrustSet")
     table.insert(list_sounds,"V1")
     table.insert(list_sounds,"V2")
     table.insert(list_sounds,"VR")
@@ -762,9 +779,9 @@ function TolissCP_DisplayValuesPanel()
     glColor4f(M_COLORS.YELLOW.red, M_COLORS.YELLOW.green, M_COLORS.YELLOW.blue, 1)
     
     
-    --[[
     draw_string_Times_Roman_24(800, 900, "PHASE                    = "..DATAREF_APPhase or "")
-    draw_string_Times_Roman_24(800, 870, "DATAREF_THRLeverMode     = "..DATAREF_THRLeverMode or "")
+    draw_string_Times_Roman_24(800, 870, "DATAREF_APVerticalArmed     = "..DATAREF_APVerticalArmed or "")
+    --[[ 
     draw_string_Times_Roman_24(800, 840, "DATAREF_athr_thrust_mode = "..DATAREF_athr_thrust_mode or "")
     draw_string_Times_Roman_24(800, 810, "TolissCP.Value.athr_thrust_mode         = "..TolissCP.Value.athr_thrust_mode or "")
     draw_string_Times_Roman_24(800, 770, "DATAREF_ATHRmode2        = "..DATAREF_ATHRmode2)
