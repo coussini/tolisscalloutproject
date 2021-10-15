@@ -179,7 +179,9 @@ function TolissCP.CheckFmaLateralEngagedMode()
         if TolissCP.Value.APLateralMode ~= DATAREF_APLateralMode then
             TolissCP.Value.APLateralMode = DATAREF_APLateralMode
             if     DATAREF_APLateralMode == 0 then TolissCP.Object_sound:set_and_insert("RWY",0) 
-            elseif DATAREF_APLateralMode == 1 then TolissCP.Object_sound:set_and_insert("RWYTRK",0) 
+            elseif DATAREF_APLateralMode == 1 
+                then TolissCP.Object_sound:set_and_insert("RWY",0) 
+                then TolissCP.Object_sound:set_and_insert("TRACK",0) 
             elseif DATAREF_APLateralMode == 2 then TolissCP.Object_sound:set_and_insert("NAV",0) 
             elseif DATAREF_APLateralMode == 6 then 
                 TolissCP.Object_sound:set_and_insert("Loc",0) 
