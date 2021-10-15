@@ -124,11 +124,11 @@ function TolissCP.CheckFmaVerticalEngagedMode()
             elseif DATAREF_APVerticalMode == 1 then TolissCP.Object_sound:set_and_insert("Climb",0) 
             elseif DATAREF_APVerticalMode == 2 then TolissCP.Object_sound:set_and_insert("Descent",0) 
             elseif DATAREF_APVerticalMode == 3 then 
-                TolissCP.Object_sound:set_and_insert("Alt",0.5) 
+                TolissCP.Object_sound:set_and_insert("Alt",0) 
                 TolissCP.Object_sound:set_and_insert("CST",0) 
                 TolissCP.Object_sound:set_and_insert("Star",0) 
             elseif DATAREF_APVerticalMode == 4 then 
-                TolissCP.Object_sound:set_and_insert("Alt",0.5) 
+                TolissCP.Object_sound:set_and_insert("Alt",0) 
                 TolissCP.Object_sound:set_and_insert("CST",0) 
             elseif DATAREF_APVerticalMode == 6 then 
                 TolissCP.Object_sound:set_and_insert("GlideSlope",0) 
@@ -147,7 +147,7 @@ function TolissCP.CheckFmaVerticalEngagedMode()
                 TolissCP.Object_sound:set_and_insert("Open",0)            
                 TolissCP.Object_sound:set_and_insert("Descent",0)            
             elseif DATAREF_APVerticalMode == 103 then 
-                TolissCP.Object_sound:set_and_insert("Alt",0.5) 
+                TolissCP.Object_sound:set_and_insert("Alt",0) 
                 TolissCP.Object_sound:set_and_insert("Star",0) 
             elseif DATAREF_APVerticalMode == 104 then 
                 if DATAREF_altitude_ft_pilot + 400 > DATAREF_cruise_alt then -- patch because ALT appear just before ALT CRZ
@@ -156,7 +156,7 @@ function TolissCP.CheckFmaVerticalEngagedMode()
                 end 
             elseif DATAREF_APVerticalMode == 105 then 
                 TolissCP.isReachCruise = true            
-                TolissCP.Object_sound:set_and_insert("Alt",0.5) -- alt play before alt cruise so... only cruise 
+                TolissCP.Object_sound:set_and_insert("Alt",0) -- alt play before alt cruise so... only cruise 
                 TolissCP.Object_sound:set_and_insert("Cruise",4) -- alt play before alt cruise so... only cruise 
             elseif DATAREF_APVerticalMode == 112 then 
                 TolissCP.Object_sound:set_and_insert("Expedite",0) 
@@ -606,7 +606,7 @@ function TolissCP.PrepareSoundList()
         table.insert(list_sounds,number)
     end
 
-    table.insert(list_sounds,"100Kts")
+    table.insert(list_sounds,"100kts")
     table.insert(list_sounds,"60kts")
     table.insert(list_sounds,"AP1On")
     table.insert(list_sounds,"AP2On")
