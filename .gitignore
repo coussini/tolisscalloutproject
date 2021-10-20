@@ -11,4 +11,6 @@ TCP.*
 *.mov
 *.aac
 *.md*
+*.h
+*.cpp
 DS_Store.xorg
