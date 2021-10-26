@@ -13,4 +13,7 @@ TCP.*
 *.md*
 *.h
 *.cpp
+*.xlsx
+*.jpeg
+*.pdf
 DS_Store.xorg
