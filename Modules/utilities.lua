@@ -248,6 +248,24 @@ function M_UTILITIES.FindSize(file)
     return size
 end
 
+--++--------------------------------------------------------++
+--|| M_UTILITIES.ReadFile() Return the contains of the file ||
+--++--------------------------------------------------------++
+function M_UTILITIES.ReadFile(file)
+    
+    lines = {}
+    local f = io.open(file, "rb")
+    
+    if f then 
+        f:close() 
+        for line in io.lines(file) do 
+            lines[#lines + 1] = line
+        end
+    end
+  
+    return lines
+end
+
 --++-----------------------------------------------------------++
 --|| M_UTILITIES.Fsize() Return a time limit value for a timer ||
 --++-----------------------------------------------------------++

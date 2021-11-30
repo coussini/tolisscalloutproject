@@ -137,7 +137,7 @@ M_WRITING.FONTS =
 function M_WRITING.get_height_in_pixel(font_pseudo)
 
     local font_pseudo = M_UTILITIES.ItemListValid(M_WRITING.fonts_pseudo_valid,string.upper(font_pseudo)) and string.upper(font_pseudo) or "H10"
-    local height_in_pixel
+    local height_in_pixel = 8.5
 
     if     M_UTILITIES.IndexOff(font_pseudo,"H10") then height_in_pixel = 8.5
     elseif M_UTILITIES.IndexOff(font_pseudo,"H12") then height_in_pixel = 9.5
@@ -157,7 +157,7 @@ function M_WRITING.write(coordinates,colors,writing)
     local font_pseudo = M_UTILITIES.ItemListValid(M_WRITING.fonts_pseudo_valid,string.upper(writing.font_pseudo)) and string.upper(writing.font_pseudo) or "H10"
 
     -- Select the last color for the normal text and bold only (because the emboss use another colors)
-    if not IndexOff(font_pseudo,"E") then
+    if not M_UTILITIES.IndexOff(font_pseudo,"E") then
         glColor4f(colors[3].rgb.red, colors[3].rgb.green, colors[3].rgb.blue, colors[3].alpha)
     end
 
