@@ -482,7 +482,7 @@ function TolissCP.CheckAutopilotPhase_Climb()
         TolissCP.Object_sound:set_and_insert("PF","SetStandard",2) 
     end
 
-    if DATAREF_BaroStdCapt and TolissCP.Object_sound:is_played("PF","SetStandard") and not TolissCP.Object_sound:is_played("PM","StandardSet") then
+    if DATAREF_BaroStdCapt and M_UTILITIES.Round(DATAREF_barometer_setting,2) == 29.92 and TolissCP.Object_sound:is_played("PF","SetStandard") and not TolissCP.Object_sound:is_played("PM","StandardSet") then
         TolissCP.Object_sound:set_and_insert("PM","StandardSet",2) 
         TolissCP.Object_sound:set_and_insert("PM","Crosschecked",0)
         TolissCP.Object_sound:set_and_insert("PM","Passing",0) 
