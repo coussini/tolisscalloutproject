@@ -444,6 +444,10 @@ function TolissCP.CheckAutopilotPhasePreflight()
         TolissCP.Object_sound:set_and_insert("PF","FlightAttAdvice",1) 
     end
 
+    if DATAREF_LeftLandLightExtended == 1 and DATAREF_RightLandLightExtended == 1 and not TolissCP.Object_sound:is_played("PF","CptTakeoff") then 
+        TolissCP.Object_sound:set_and_insert("PF","CptTakeoff",1) 
+    end
+
     TolissCP.LastFlapSet = DATAREF_FlapLeverRatio
 
 end
@@ -647,7 +651,7 @@ end
 --++-------------------------------------------------------------++
 function TolissCP.CheckAutopilotPhase_Done()
 
-    if DATAREF_beacon_on == 1 and not TolissCP.Object_sound:is_played("PF","CptParking") then 
+    if DATAREF_beacon_on == 0 and not TolissCP.Object_sound:is_played("PF","CptParking") then 
         TolissCP.Object_sound:set_and_insert("PF","CptParking",1) 
     end
     
