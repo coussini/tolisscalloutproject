@@ -431,6 +431,19 @@ function TolissCP.CheckAutopilotPhasePreflight()
         TolissCP.isAutopilotPhasePreflightDone = true
     end
 
+    if DATAREF_CargoDoorArray == 0 and not TolissCP.Object_sound:is_played("PF","FlightBoardingCompleted") then 
+        TolissCP.Object_sound:set_and_insert("PF","FlightBoardingCompleted",5) 
+        TolissCP.Object_sound:set_and_insert("PF","CptWelcome",1) 
+    end
+
+    if DATAREF_beacon_on == 1 and not TolissCP.Object_sound:is_played("PF","DoorsCrossCheck") then 
+        TolissCP.Object_sound:set_and_insert("PF","DoorsCrossCheck",1) 
+    end
+
+    if DATAREF_APUBleedSwitch == 1 and not TolissCP.Object_sound:is_played("PF","FlightAttAdvice") then 
+        TolissCP.Object_sound:set_and_insert("PF","FlightAttAdvice",1) 
+    end
+
     TolissCP.LastFlapSet = DATAREF_FlapLeverRatio
 
 end
@@ -506,7 +519,8 @@ end
 function TolissCP.CheckAutopilotPhase_Cruize()
 
     if TolissCP.isReachCruise and not TolissCP.Object_sound:is_played("PF","SetTCASToNeutral") and DATAREF_XPDRTCASAltSelect ~= 1 then 
-        TolissCP.Object_sound:set_and_insert("PF","SetTCASToNeutral",0) 
+        TolissCP.Object_sound:set_and_insert("PF","SetTCASToNeutral",4) 
+        TolissCP.Object_sound:set_and_insert("PF","CptCruiseLvl",1) 
     end
 
     if M_UTILITIES.Round(DATAREF_DistToDest) <= 180 and M_UTILITIES.Round(DATAREF_DistToDest) >= 170 and not TolissCP.Object_sound:is_played("PF","Pass180NM") then 
@@ -525,7 +539,8 @@ end
 function TolissCP.CheckAutopilotPhase_Descent()
 
     if not TolissCP.Object_sound:is_played("PF","SetTCASToBelow") and DATAREF_XPDRTCASAltSelect ~= 2 then 
-        TolissCP.Object_sound:set_and_insert("PF","SetTCASToBelow",1) 
+        TolissCP.Object_sound:set_and_insert("PF","SetTCASToBelow",4) 
+        TolissCP.Object_sound:set_and_insert("PF","CptDescent",1) 
     end
 
     if M_UTILITIES.Round(DATAREF_ALTCapt) <= 9999 and M_UTILITIES.Round(DATAREF_ALTCapt) > 9995 and M_UTILITIES.Round(DATAREF_vvi_fpm_pilot) < 0 and not TolissCP.Object_sound:is_played("PF","Pass10000Feet")  then
@@ -598,6 +613,7 @@ function TolissCP.CheckAutopilotPhase_Approach()
             TolissCP.Object_sound:set_and_insert("PF","NODH",0) 
         end
 
+        TolissCP.Object_sound:set_and_insert("PF","CptLanding",2) 
         TolissCP.Object_sound:set_and_insert("PF","MissedApproachSet",0) 
         TolissCP.Object_sound:insert_number("PF",DATAREF_ap_altitude_reference,0) 
         TolissCP.Object_sound:set_and_insert("PF","Blue",0) 
@@ -630,6 +646,11 @@ end
 --|| TolissCP.CheckAutopilotPhase_Done() check all "done" events || 
 --++-------------------------------------------------------------++
 function TolissCP.CheckAutopilotPhase_Done()
+
+    if DATAREF_beacon_on == 1 and not TolissCP.Object_sound:is_played("PF","CptParking") then 
+        TolissCP.Object_sound:set_and_insert("PF","CptParking",1) 
+    end
+    
 end
 
 --++-------------------------------------------------------------++
@@ -676,6 +697,13 @@ end
 --|| TolissCP.LoadingDataFromDataref() get datarefs for internal usage || 
 --++--------------------------------------------------------------------++
 function TolissCP.LoadingDataFromDataref()
+
+    DataRef("DATAREF_LeftLandLightExtended","AirbusFBW/LeftLandLightExtended","readonly") -- CptTakeoff
+    DataRef("DATAREF_RightLandLightExtended","AirbusFBW/RightLandLightExtended","readonly") -- CptTakeoff
+    DataRef("DATAREF_APUBleedSwitch","AirbusFBW/APUBleedSwitch","readonly") -- FlightAttAdvice
+    DataRef("DATAREF_CargoDoorArray","AirbusFBW/CargoDoorArray","readonly",0) -- Indice 0 de l'array
+    --DataRef("DATAREF_PurserAll","AirbusFBW/purser/all","readonly") -- Landing / CptLanding
+    DataRef("DATAREF_beacon_on","sim/cockpit2/switches/beacon_on","readonly") 
 
     DataRef("DATAREF_ALTCapt","AirbusFBW/ALTCapt","readonly")
     DataRef("DATAREF_ALTisCstr","AirbusFBW/ALTisCstr","readonly")
@@ -781,6 +809,17 @@ function TolissCP.PrepareSoundList()
     for number=20,90,10 do
         table.insert(list_sounds,number)
     end
+
+    table.insert(list_sounds,"FlightBoardingCompleted")
+    table.insert(list_sounds,"CptWelcome")
+    table.insert(list_sounds,"DoorsCrossCheck")
+    table.insert(list_sounds,"FlightAttAdvice")
+    table.insert(list_sounds,"CptTakeoff")
+    table.insert(list_sounds,"CptCruiseLvl")
+    table.insert(list_sounds,"CptDescent")
+    table.insert(list_sounds,"CptLanding")
+    table.insert(list_sounds,"CptParking")
+
 
     table.insert(list_sounds,"100kts")
     table.insert(list_sounds,"60kts")
