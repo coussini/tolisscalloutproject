@@ -425,27 +425,54 @@ end
 --++--------------------------------------------------------------------++
 function TolissCP.CheckAutopilotPhasePreflight()
 
-    if not TolissCP.isAutopilotPhasePreflightDone then -- reset to allow a second flight
-        TolissCP.Object_sound:reset_isPlayed_flags_to_false(TolissCP.list_sounds)
-        TolissCP.SetDefaultValues()
-        TolissCP.isAutopilotPhasePreflightDone = true
-    end
+    --------------------------------------------
+    -- ETAT AVION AVEC CHOCKS (STATIONNEMENT) --
+    --------------------------------------------
+    if DATAREF_Chocks == 1 then 
+        --------------------------------
+        -- ETAT AVION AVANT PUSH BACK --
+        --------------------------------
+        if DATAREF_beacon_on == 0 then 
+            if not TolissCP.isAutopilotPhaseDone then 
+                -- BOARDING COMPLETED --
+                if DATAREF_SeatBeltSignsOn == 1 and DATAREF_CargoDoorArray == 0 and DATAREF_ExtPwr_on == 0 and not TolissCP.Object_sound:is_played("PF","FlightBoardingCompleted") then 
+                    TolissCP.Object_sound:set_and_insert("PF","FlightBoardingCompleted",5) 
+                    TolissCP.Object_sound:set_and_insert("PF","CptWelcome",1) 
+                end
+            else 
+                -- AIRCRAFT / PARKING --
+                if DATAREF_APUBleedSwitch == 1 and not TolissCP.Object_sound:is_played("PF","CptParking") then 
+                    TolissCP.Object_sound:set_and_insert("PF","CptParking",1) 
+                end
+                -- RESET FOR NEXT FLIGHT --
+                if  DATAREF_SeatBeltSignsOn == 0 and DATAREF_APUBleedSwitch == 0 then 
+                    TolissCP.Object_sound:reset_isPlayed_flags_to_false(TolissCP.list_sounds)
+                    TolissCP.SetDefaultValues()
+                    TolissCP.isAutopilotPhaseDone = false                
+                end
+            end 
+        ------------------------------------------
+        -- ETAT AVION DURANT OU APRES PUSH BACK --
+        ------------------------------------------
+        else 
+            -- JUST BEFORE PUSHBACK OU A L'ARRIVÉE AU TERMINAL --
+            if not TolissCP.isAutopilotPhaseDone and not TolissCP.Object_sound:is_played("PF","DoorsCrossCheck") then 
+                TolissCP.Object_sound:set_and_insert("PF","DoorsCrossCheck",1) 
+            end
+        end
 
-    if DATAREF_CargoDoorArray == 0 and not TolissCP.Object_sound:is_played("PF","FlightBoardingCompleted") then 
-        TolissCP.Object_sound:set_and_insert("PF","FlightBoardingCompleted",5) 
-        TolissCP.Object_sound:set_and_insert("PF","CptWelcome",1) 
-    end
-
-    if DATAREF_beacon_on == 1 and not TolissCP.Object_sound:is_played("PF","DoorsCrossCheck") then 
-        TolissCP.Object_sound:set_and_insert("PF","DoorsCrossCheck",1) 
-    end
-
-    if DATAREF_APUBleedSwitch == 1 and not TolissCP.Object_sound:is_played("PF","FlightAttAdvice") then 
-        TolissCP.Object_sound:set_and_insert("PF","FlightAttAdvice",1) 
-    end
-
-    if DATAREF_LeftLandLightExtended == 1 and DATAREF_RightLandLightExtended == 1 and not TolissCP.Object_sound:is_played("PF","CptTakeoff") then 
-        TolissCP.Object_sound:set_and_insert("PF","CptTakeoff",1) 
+    ----------------------------------------------------------------
+    -- ETAT AVION SANS CHOCKS (PUSH BACK OU ROULEMENT VERS PISTE) --
+    ----------------------------------------------------------------
+    else 
+        -- DURING PUSHBACK --
+        if DATAREF_APUBleedSwitch == 1 and not TolissCP.Object_sound:is_played("PF","FlightAttAdvice") then 
+            TolissCP.Object_sound:set_and_insert("PF","FlightAttAdvice",1) 
+        end
+        -- PREPARE TO TAKEOFF --
+        if DATAREF_LeftLandLightExtended == 1 and DATAREF_RightLandLightExtended == 1 and not TolissCP.Object_sound:is_played("PF","CptTakeoff") then 
+            TolissCP.Object_sound:set_and_insert("PF","CptTakeoff",1) 
+        end
     end
 
     TolissCP.LastFlapSet = DATAREF_FlapLeverRatio
@@ -651,9 +678,7 @@ end
 --++-------------------------------------------------------------++
 function TolissCP.CheckAutopilotPhase_Done()
 
-    if DATAREF_beacon_on == 0 and not TolissCP.Object_sound:is_played("PF","CptParking") then 
-        TolissCP.Object_sound:set_and_insert("PF","CptParking",1) 
-    end
+    TolissCP.isAutopilotPhaseDone = true
     
 end
 
@@ -721,8 +746,9 @@ function TolissCP.LoadingDataFromDataref()
     DataRef("DATAREF_barometer_setting","sim/cockpit/misc/barometer_setting","readonly")
     DataRef("DATAREF_barometer_setting2","sim/cockpit/misc/barometer_setting2","readonly")
     DataRef("DATAREF_BaroStdCapt","AirbusFBW/BaroStdCapt","readonly")
-    DataRef("DATAREF_beacon_on","sim/cockpit2/switches/beacon_on","readonly") 
+    DataRef("DATAREF_beacon_on","AirbusFBW/OHPLightSwitches","readonly",0) -- Indice 0 = Beacon 
     DataRef("DATAREF_CargoDoorArray","AirbusFBW/CargoDoorArray","readonly",0) -- Indice 0 de l'array
+    DataRef("DATAREF_Chocks","AirbusFBW/Chocks","readonly")
     DataRef("DATAREF_ConstraintAlt","AirbusFBW/ConstraintAlt","readonly")
     DataRef("DATAREF_cruise_alt","toliss_airbus/init/cruise_alt","readonly")
     DataRef("DATAREF_DeptTrans","toliss_airbus/performance/DeptTrans","readonly")
@@ -730,6 +756,7 @@ function TolissCP.LoadingDataFromDataref()
     DataRef("DATAREF_DestTrans","toliss_airbus/performance/DestTrans","readonly")
     DataRef("DATAREF_DH","toliss_airbus/performance/DH","readonly")
     DataRef("DATAREF_DistToDest","AirbusFBW/DistToDest","readonly")
+    DataRef("DATAREF_ExtPwr_on","AirbusFBW/ElecOHPArray","readonly",3) -- Indice 3 = Ext Pwr
     DataRef("DATAREF_FlapLeverRatio","AirbusFBW/FlapLeverRatio","readonly")
     DataRef("DATAREF_FMA1g","AirbusFBW/FMA1g","readonly",0) 
     DataRef("DATAREF_GearLever","AirbusFBW/GearLever","readonly")
@@ -917,7 +944,7 @@ function TolissCP.SetDefaultValues()
     -----------
     -- FLAGS --
     -----------
-    TolissCP.isAutopilotPhasePreflightDone = true 
+    TolissCP.isAutopilotPhaseDone = false 
     TolissCP.isMissedApproachWarning = false 
     TolissCP.isReachCruise = false 
     TolissCP.isTodCaptured = false 
@@ -1081,12 +1108,10 @@ function TolissCP_TolissCallouts()
             TolissCP.CheckFlightModeAnnunciationsColumns()
             TolissCP.CheckAutopilotPhase_Approach()
             TolissCP.CheckFlapsAndGear()
-            TolissCP.isAutopilotPhasePreflightDone = false
     elseif  DATAREF_APPhase == 6 then
             TolissCP.CheckFlightModeAnnunciationsColumns()
             TolissCP.CheckAutopilotPhase_Go_around()
             TolissCP.CheckFlapsAndGear()
-            TolissCP.isAutopilotPhasePreflightDone = false
     elseif  DATAREF_APPhase == 7 then
             TolissCP.CheckAutopilotPhase_Done()
     end
