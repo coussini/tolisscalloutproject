@@ -1038,13 +1038,6 @@ end
 --++--------------------------------------------------------------------------++
 function TolissCP_TolissCallouts()
 
-    if not last_button(320) and button(320) then
-        command_once("AirbusFBW/purser/fwd")
-    end
-
-    if not last_button(321) and button(321) then
-        command_once("AirbusFBW/TOConfigPress")
-    end
     ----------------------------------------------------------------------------------
     -- IMPORTANT STEP : DO NOT REMOVE IT (IN CASE OF RELOADING SITUATION FROM ISCS) --
     ----------------------------------------------------------------------------------
