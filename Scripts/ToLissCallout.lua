@@ -702,13 +702,6 @@ end
 --++--------------------------------------------------------------------++
 function TolissCP.LoadingDataFromDataref()
 
-    DataRef("DATAREF_LeftLandLightExtended","AirbusFBW/LeftLandLightExtended","readonly") -- CptTakeoff
-    DataRef("DATAREF_RightLandLightExtended","AirbusFBW/RightLandLightExtended","readonly") -- CptTakeoff
-    DataRef("DATAREF_APUBleedSwitch","AirbusFBW/APUBleedSwitch","readonly") -- FlightAttAdvice
-    DataRef("DATAREF_CargoDoorArray","AirbusFBW/CargoDoorArray","readonly",0) -- Indice 0 de l'array
-    --DataRef("DATAREF_PurserAll","AirbusFBW/purser/all","readonly") -- Landing / CptLanding
-    DataRef("DATAREF_beacon_on","sim/cockpit2/switches/beacon_on","readonly") 
-
     DataRef("DATAREF_ALTCapt","AirbusFBW/ALTCapt","readonly")
     DataRef("DATAREF_ALTisCstr","AirbusFBW/ALTisCstr","readonly")
     DataRef("DATAREF_AP1Engage","AirbusFBW/AP1Engage","readonly")
@@ -719,6 +712,7 @@ function TolissCP.LoadingDataFromDataref()
     DataRef("DATAREF_APPhase","AirbusFBW/APPhase","readonly")  
     DataRef("DATAREF_APPRilluminated","AirbusFBW/APPRilluminated","readonly")
     DataRef("DATAREF_approach_type","toliss_airbus/pfdoutputs/general/approach_type","readonly")  
+    DataRef("DATAREF_APUBleedSwitch","AirbusFBW/APUBleedSwitch","readonly") -- FlightAttAdvice
     DataRef("DATAREF_APVerticalArmed","AirbusFBW/APVerticalArmed","readonly")  
     DataRef("DATAREF_APVerticalMode","AirbusFBW/APVerticalMode","readonly")
     DataRef("DATAREF_athr_thrust_mode","toliss_airbus/pfdoutputs/general/athr_thrust_mode","readonly")
@@ -727,6 +721,8 @@ function TolissCP.LoadingDataFromDataref()
     DataRef("DATAREF_barometer_setting","sim/cockpit/misc/barometer_setting","readonly")
     DataRef("DATAREF_barometer_setting2","sim/cockpit/misc/barometer_setting2","readonly")
     DataRef("DATAREF_BaroStdCapt","AirbusFBW/BaroStdCapt","readonly")
+    DataRef("DATAREF_beacon_on","sim/cockpit2/switches/beacon_on","readonly") 
+    DataRef("DATAREF_CargoDoorArray","AirbusFBW/CargoDoorArray","readonly",0) -- Indice 0 de l'array
     DataRef("DATAREF_ConstraintAlt","AirbusFBW/ConstraintAlt","readonly")
     DataRef("DATAREF_cruise_alt","toliss_airbus/init/cruise_alt","readonly")
     DataRef("DATAREF_DeptTrans","toliss_airbus/performance/DeptTrans","readonly")
@@ -740,12 +736,14 @@ function TolissCP.LoadingDataFromDataref()
     DataRef("DATAREF_GSCapt","AirbusFBW/GSCapt","readonly") -- for displaying value only ???
     DataRef("DATAREF_HideBaroCapt","AirbusFBW/HideBaroCapt","readonly")
     DataRef("DATAREF_IASCapt","AirbusFBW/IASCapt","readonly")
+    DataRef("DATAREF_LeftLandLightExtended","AirbusFBW/LeftLandLightExtended","readonly") -- CptTakeoff
     DataRef("DATAREF_m_fuel_total","sim/flightmodel/weight/m_fuel_total","readonly")
     DataRef("DATAREF_MCDU2cont1b","AirbusFBW/MCDU2cont1b","readonly",0)
     DataRef("DATAREF_MCDU2cont2g","AirbusFBW/MCDU2cont2g","readonly",0)
     DataRef("DATAREF_MCDU2cont3g","AirbusFBW/MCDU2cont3g","readonly",0)
     DataRef("DATAREF_MDA","toliss_airbus/performance/MDA","readonly")
     DataRef("DATAREF_radio_altimeter_height_ft_pilot","sim/cockpit2/gauges/indicators/radio_altimeter_height_ft_pilot","readonly")
+    DataRef("DATAREF_RightLandLightExtended","AirbusFBW/RightLandLightExtended","readonly") -- CptTakeoff
     DataRef("DATAREF_SeatBeltSignsOn","AirbusFBW/SeatBeltSignsOn","readonly")
     DataRef("DATAREF_THRLeverMode","AirbusFBW/THRLeverMode","readonly")
     DataRef("DATAREF_thrust_reverser_deploy_ratio","sim/flightmodel2/engines/thrust_reverser_deploy_ratio","readonly",0)    
@@ -814,17 +812,6 @@ function TolissCP.PrepareSoundList()
         table.insert(list_sounds,number)
     end
 
-    table.insert(list_sounds,"FlightBoardingCompleted")
-    table.insert(list_sounds,"CptWelcome")
-    table.insert(list_sounds,"DoorsCrossCheck")
-    table.insert(list_sounds,"FlightAttAdvice")
-    table.insert(list_sounds,"CptTakeoff")
-    table.insert(list_sounds,"CptCruiseLvl")
-    table.insert(list_sounds,"CptDescent")
-    table.insert(list_sounds,"CptLanding")
-    table.insert(list_sounds,"CptParking")
-
-
     table.insert(list_sounds,"100kts")
     table.insert(list_sounds,"60kts")
     table.insert(list_sounds,"80kts")
@@ -840,16 +827,25 @@ function TolissCP.PrepareSoundList()
     table.insert(list_sounds,"CAT3")
     table.insert(list_sounds,"Checked")
     table.insert(list_sounds,"Climb")
+    table.insert(list_sounds,"CptCruiseLvl")
+    table.insert(list_sounds,"CptDescent")
+    table.insert(list_sounds,"CptLanding")
+    table.insert(list_sounds,"CptParking")
+    table.insert(list_sounds,"CptTakeoff")
+    table.insert(list_sounds,"CptWelcome")
     table.insert(list_sounds,"Crosschecked")
     table.insert(list_sounds,"Cruise")
     table.insert(list_sounds,"CST")
     table.insert(list_sounds,"Descent")
+    table.insert(list_sounds,"DoorsCrossCheck")
     table.insert(list_sounds,"DOT")
     table.insert(list_sounds,"Dual")
     table.insert(list_sounds,"Expedite")
     table.insert(list_sounds,"FinalApproach")
     table.insert(list_sounds,"Flaps")
     table.insert(list_sounds,"Flex")
+    table.insert(list_sounds,"FlightAttAdvice")
+    table.insert(list_sounds,"FlightBoardingCompleted")
     table.insert(list_sounds,"FlightLevel")
     table.insert(list_sounds,"For")
     table.insert(list_sounds,"FSpeed")
